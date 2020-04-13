@@ -11,7 +11,14 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
+      isAdmin: {
+        type:Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       email: {
+        type: Sequelize.STRING
+      },
+      password: {
         type: Sequelize.STRING
       },
       gender: {
