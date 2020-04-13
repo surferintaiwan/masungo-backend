@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs')
-const faker = require('faker')
 'use strict';
 
 module.exports = {
