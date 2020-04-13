@@ -23,7 +23,7 @@ module.exports = {
       inventory: {
         type: Sequelize.INTEGER
       },
-      status: {
+      sellingStatus: {
         type: Sequelize.BOOLEAN
       },
       shippingFee: {
