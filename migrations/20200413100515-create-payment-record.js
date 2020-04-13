@@ -11,13 +11,13 @@ module.exports = {
       OrderId: {
         type: Sequelize.INTEGER
       },
-      PaymentMethodId: {
-        type: Sequelize.INTEGER
-      },
       amount: {
         type: Sequelize.INTEGER
       },
       paymentStatus: {
+        type: Sequelize.STRING
+      },
+      payNumber: {
         type: Sequelize.STRING
       },
       createdAt: {
