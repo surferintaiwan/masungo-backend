@@ -11,7 +11,7 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      CategoryId1: {
+      Category1Id: {
         type: Sequelize.INTEGER
       },
       createdAt: {
