@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     fee: DataTypes.INTEGER
   }, {});
   DeliveryMethod.associate = function(models) {
-    // associations can be defined here
+    DeliveryMethod.hasMany(models.Order)
   };
   return DeliveryMethod;
 };

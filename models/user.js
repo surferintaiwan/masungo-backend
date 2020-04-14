@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING
   }, {});
   User.associate = function(models) {
+    User.hasMany(models.Order)
     // associations can be defined here
   };
   return User;

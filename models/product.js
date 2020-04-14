@@ -2,11 +2,11 @@
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define('Product', {
     name: DataTypes.STRING,
-    brand: DataTypes.INTEGER,
+    BrandId: DataTypes.INTEGER,
     listPrice: DataTypes.INTEGER,
     sellingPrice: DataTypes.INTEGER,
     inventory: DataTypes.INTEGER,
-    status: DataTypes.BOOLEAN,
+    sellingStatus: DataTypes.BOOLEAN,
     shippingFee: DataTypes.BOOLEAN,
     image1: DataTypes.STRING,
     image2: DataTypes.STRING,
@@ -15,12 +15,17 @@ module.exports = (sequelize, DataTypes) => {
     detail: DataTypes.TEXT,
     deliveryKnow: DataTypes.TEXT,
     refundKnow: DataTypes.TEXT,
-    category1: DataTypes.INTEGER,
-    category2: DataTypes.INTEGER,
-    category3: DataTypes.INTEGER
+    category1Id: DataTypes.INTEGER,
+    category2Id: DataTypes.INTEGER,
+    category3Id: DataTypes.INTEGER
   }, {});
   Product.associate = function(models) {
     // associations can be defined here
+    Product.belongsTo(models.Brand)
+    Product.belongsTo(models.Category1)
+    Product.belongsTo(models.Category2)
+    Product.belongsTo(models.Category3)
+    Product.hasMany(models.OrderItem)
   };
   return Product;
 };

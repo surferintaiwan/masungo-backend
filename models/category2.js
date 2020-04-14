@@ -2,10 +2,12 @@
 module.exports = (sequelize, DataTypes) => {
   const Category2 = sequelize.define('Category2', {
     name: DataTypes.STRING,
-    CategoryId1: DataTypes.INTEGER
+    Category1Id: DataTypes.INTEGER
   }, {});
   Category2.associate = function(models) {
-    // associations can be defined here
+    Category2.hasMany(models.Product)
+    Category2.belongsTo(models.Category1)
+    Category2.hasMany(models.Category3)
   };
   return Category2;
 };

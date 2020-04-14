@@ -5,11 +5,15 @@ module.exports = (sequelize, DataTypes) => {
     deliveryMethodId: DataTypes.INTEGER,
     paymentMethodId: DataTypes.INTEGER,
     amount: DataTypes.INTEGER,
-    orderStatus: DataTypes.INTEGER,
-    paynumber: DataTypes.STRING
+    orderStatusId: DataTypes.INTEGER,
   }, {});
   Order.associate = function(models) {
-    // associations can be defined here
+    Order.belongsTo(models.User)
+    Order.belongsTo(models.DeliveryMethod)
+    Order.belongsTo(models.PaymentMethod)
+    Order.belongsTo(models.OrderStatus)
+    Order.hasMany(models.OrderItem)
+    Order.hasMany(models.PaymentRecord)
   };
   return Order;
 };

@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING
   }, {});
   PaymentMethod.associate = function(models) {
-    // associations can be defined here
+    PaymentMethod.hasMany(models.Order)
   };
   return PaymentMethod;
 };
