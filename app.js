@@ -13,6 +13,7 @@ app.listen(3000, ()=>{
     console.log('localhost:3000 is listenting')
 })
 
+app.use(express.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 require('./routes')(app)
