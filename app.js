@@ -2,6 +2,9 @@ const express = require('express')
 const app = express()
 const db = require('./models')
 const bodyParser = require('body-parser')
+const cors = require('cors')
+
+app.use(cors())
 
 // 使用環境變數儲存敏感訊息
 if (process.env.NODE_env !== 'production') {
