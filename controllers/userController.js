@@ -61,11 +61,12 @@ const userController = {
                     user: {
                         id: user.id,
                         name: user.name,
-                        isAdmin: true
+                        isAdmin: user.isAdmin,
+                        email: user.email
                     }
                 })
             })
-    }
+    },
 }
 
 module.exports = userController
