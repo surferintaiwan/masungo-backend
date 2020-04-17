@@ -7,13 +7,15 @@ const userController = require('../controllers/userController')
 const adminController = require('../controllers/adminController')
 const productController = require('../controllers/productController')
 
-const authenticated = passport.authenticate('jwt', {session: false})
+const authenticated = passport.authenticate('jwt', { session: false })
 const authenticatedAdmin = (req, res, next) => {
     if (req.user) {
-        if (req.user.isAdmin) {return next()}
-        return res.json({status: 'error', message: '沒有讀取權限'})
+        if (req.user.isAdmin) {
+            return next()
+        }
+        return res.json({ status: 'error', message: '沒有讀取權限' })
     } else {
-        return res.json({status: 'error', message: '沒有這個使用者'})
+        return res.json({ status: 'error', message: '沒有這個使用者' })
     }
 }
 
@@ -23,17 +25,31 @@ router.post('/signIn', userController.signIn)
 
 // 前台
 router.get('/index', authenticated, (req, res) => {
-    Product.findAll()
-            .then(products => {
-              return res.json({products: products})
-            })
+    Product.findAll().then((products) => {
+        return res.json({ products: products })
+    })
 })
-router.get('/getcurrentuser', authenticated,(req, res) => {
-    res.json({user: req.user})
+router.get('/getcurrentuser', authenticated, (req, res) => {
+    res.json({ user: req.user })
 })
-router.get('/categories', authenticated, productController.getCategories)
+router.get(
+    '/getallcategories',
+    authenticated,
+    productController.getAllCategories
+)
+
+router.get(
+    '/categories',
+    authenticated,
+    productController.getProductsByCategory
+)
 
 // 後台
-router.get('/admin/members', authenticated, authenticatedAdmin, adminController.getMembers)
+router.get(
+    '/admin/members',
+    authenticated,
+    authenticatedAdmin,
+    adminController.getMembers
+)
 
 module.exports = router
