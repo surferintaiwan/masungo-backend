@@ -34,6 +34,14 @@ const productController = {
         }).then((products) => {
             res.json({ products: products })
         })
+    },
+    getProductDetail: (req, res) => {
+        console.log(123)
+        Product.findByPk(req.params.productId, {
+            include: [{ model: db.Brand }]
+        }).then((product) => {
+            res.json({ product: product })
+        })
     }
 }
 

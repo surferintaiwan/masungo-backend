@@ -44,6 +44,12 @@ router.get(
     productController.getProductsByCategory
 )
 
+router.get(
+    '/products/:productId',
+    authenticated,
+    productController.getProductDetail
+)
+
 // 後台
 router.get(
     '/admin/members',
