@@ -6,6 +6,7 @@ const User = db.User
 const Order = db.Order
 const Cart = db.Cart
 const CartItem = db.CartItem
+const OrderItem = db.OrderItem
 
 const userController = {
     signUp: (req, res) => {
@@ -90,21 +91,46 @@ const userController = {
         const address = req.body.address
         const amount = req.body.amount
         const cartId = req.body.cartId
-        // 把訂單資料寫進資料庫
-        Order.create({
+        // 建立一筆Order
+        return Order.create({
             userId,
             paymentMethodId,
             deliveryMethodId,
             address,
             amount,
             receiver,
-            // 剛送出訂單，先給他一個orderStatusId是待付款:1，等到未來金流確實付款了才改成訂單處理中:2
+            // 剛送出訂單，先給他一個orderStatusId是待付款:1，等到稍後金流確實付款了才改成訂單處理中:2
             orderStatusId: 1,
         }).then((order) => {
-            res.json({ status: "success" })
-            // 確定訂單成立，把它的購物車清空
-            CartItem.destroy({ where: { cartId } }).then((cartItems) => {
-                console.log("刪除完成")
+            // 撈出該筆cartId的CartItem，把資料逐一搬到OrderItem
+            let results = []
+            return CartItem.findAll({ where: { cartId } }).then((cartItems) => {
+                for (let i = 0; i < cartItems.length; i++) {
+                    console.log(
+                        11111111,
+                        order.id,
+                        cartItems[i].ProductId,
+                        cartItems[i].quantity
+                    )
+                    // 因為不確定甚麼時候會做完，所以塞進一個results陣列給Promise.all監控
+                    results.push(
+                        OrderItem.create({
+                            OrderId: order.id,
+                            ProductId: cartItems[i].ProductId,
+                            quantity: cartItems[i].quantity,
+                        })
+                    )
+                }
+
+                return Promise.all(results).then(() => {
+                    res.json({ status: "success" })
+                    // 確定訂單成立，把它的購物車CartItem清空
+                    CartItem.destroy({ where: { cartId } }).then(
+                        (cartItems) => {
+                            console.log("刪除完成")
+                        }
+                    )
+                })
             })
         })
     },
