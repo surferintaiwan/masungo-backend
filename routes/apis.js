@@ -8,6 +8,9 @@ const adminController = require("../controllers/adminController")
 const productController = require("../controllers/productController")
 const cartController = require("../controllers/cartController")
 
+const multer = require("multer")
+const upload = multer()
+
 const authenticated = passport.authenticate("jwt", { session: false })
 const authenticatedAdmin = (req, res, next) => {
     if (req.user) {
@@ -45,6 +48,14 @@ router.get("/products/:productId", productController.getProductDetail)
 router.post("/cart", cartController.addCartItem)
 router.delete("/cart", cartController.deleteCartItem)
 router.get("/cart/:cartId", cartController.getCartItems)
+
+router.post(
+    "/checkout",
+    upload.array(),
+    authenticated,
+    userController.createOrder
+)
+
 // 後台
 router.get(
     "/admin/members",

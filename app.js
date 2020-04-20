@@ -3,15 +3,9 @@ const app = express()
 const db = require("./models")
 const bodyParser = require("body-parser")
 const cors = require("cors")
-// const session = require("express-session")
 
-// app.use(
-//     session({
-//         secret: "your secret key", // secret: 定義一組屬於你的字串做為私鑰
-//         resave: false,
-//         saveUninitialized: true,
-//     })
-// )
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
 app.use(cors())
 
@@ -25,7 +19,6 @@ app.listen(3000, () => {
     console.log("localhost:3000 is listenting")
 })
 
-app.use(express.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+// app.use(express.json())
 
 require("./routes")(app)

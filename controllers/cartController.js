@@ -10,9 +10,7 @@ const cartController = {
             include: [{ model: db.CartItem, include: [{ model: db.Product }] }],
         }).then((cart) => {
             // 也許購物車裡面甚麼都沒有，就要給他個空陣列，不然後面要計算金額的時候，會因為cart本身是空的，要cart.Items時會出現問題
-
             cart = cart || { items: [] }
-
             let totalPrice =
                 cart.CartItems.length > 0
                     ? cart.CartItems.map(
@@ -59,14 +57,13 @@ const cartController = {
         })
     },
     deleteCartItem: (req, res) => {
-        const cartId = req.body.cartId
-        const productId = req.body.productId
-        console.log(cartId, productId)
-        return CartItem.findByPk(cartId, {
-            where: { productId: productId },
+        const cartId = Number(req.query.cartId)
+        const productId = Number(req.query.productId)
+        return CartItem.findOne({
+            where: { ProductId: productId, CartId: cartId },
         }).then((cartItem) => {
             cartItem.destroy().then((cartItem) => {
-                return res.json({ status: "OK" })
+                return res.json({ status: "success" })
             })
         })
     },
