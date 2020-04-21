@@ -1,21 +1,9 @@
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
-const nodemailer = require("nodemailer")
 const db = require("../models")
 const User = db.User
-const Order = db.Order
-const Cart = db.Cart
-const CartItem = db.CartItem
-const OrderItem = db.OrderItem
 
 // 用自己的gmail當作mail server發信
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.gmail_user,
-        pass: process.env.gmail_pass,
-    },
-})
 
 const userController = {
     signUp: (req, res) => {
@@ -89,72 +77,6 @@ const userController = {
                     isAdmin: user.isAdmin,
                     email: user.email,
                 },
-            })
-        })
-    },
-    createOrder: (req, res) => {
-        const userId = req.user.id
-        const receiver = req.body.receiver
-        const paymentMethodId = req.body.paymentMethodId
-        const deliveryMethodId = req.body.deliveryMethodId
-        const address = req.body.address
-        const amount = req.body.amount
-        const cartId = req.body.cartId
-        // 建立一筆Order
-        return Order.create({
-            userId,
-            paymentMethodId,
-            deliveryMethodId,
-            address,
-            amount,
-            receiver,
-            // 剛送出訂單，先給他一個orderStatusId是待付款:1，等到稍後金流確實付款了才改成訂單處理中:2
-            orderStatusId: 1,
-        }).then((order) => {
-            // 撈出該筆cartId的CartItem，把資料逐一搬到OrderItem
-            let results = []
-            return CartItem.findAll({ where: { cartId } }).then((cartItems) => {
-                for (let i = 0; i < cartItems.length; i++) {
-                    // 因為不確定甚麼時候會做完，所以塞進一個results陣列給Promise.all監控
-                    results.push(
-                        OrderItem.create({
-                            OrderId: order.id,
-                            ProductId: cartItems[i].ProductId,
-                            quantity: cartItems[i].quantity,
-                        })
-                    )
-                }
-
-                return Promise.all(results).then(() => {
-                    res.json({ status: "success" })
-
-                    // 找出他的mail，發出訂單成立通知信
-                    User.findByPk(userId).then((user) => {
-                        const mailOptions = {
-                            from: "seoneedtime@gmail.com",
-                            to: user.email,
-                            subject: `${order.id}訂單成立`,
-                            text: `${order.id}訂單成立`,
-                        }
-                        transporter.sendMail(mailOptions, function (
-                            error,
-                            info
-                        ) {
-                            if (error) {
-                                console.log(error)
-                            } else {
-                                console.log("Email sent: " + info.response)
-                            }
-                        })
-
-                        // 把它的購物車CartItem清空
-                        CartItem.destroy({ where: { cartId } }).then(
-                            (cartItems) => {
-                                console.log("刪除完成")
-                            }
-                        )
-                    })
-                })
             })
         })
     },

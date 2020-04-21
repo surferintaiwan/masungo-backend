@@ -7,6 +7,7 @@ const userController = require("../controllers/userController")
 const adminController = require("../controllers/adminController")
 const productController = require("../controllers/productController")
 const cartController = require("../controllers/cartController")
+const orderController = require("../controllers/orderController")
 
 const multer = require("multer")
 const upload = multer()
@@ -27,36 +28,52 @@ const authenticatedAdmin = (req, res, next) => {
 router.post("/signup", userController.signUp)
 router.post("/signIn", userController.signIn)
 
-// 前台
+// ---前台---
+// 首頁
 router.get("/index", authenticated, (req, res) => {
     Product.findAll().then((products) => {
         return res.json({ products: products })
     })
 })
+// 獲取現在登入的使用者資訊
 router.get("/getcurrentuser", authenticated, (req, res) => {
     console.log(req.session)
     console.log(req.sessionId)
     res.json({ user: req.user })
 })
+
+// 獲取所有商品分類
 router.get("/getallcategories", productController.getAllCategories)
 
+// 商品分類頁
 router.get("/categories", productController.getProductsByCategory)
 
+// 商品詳細頁
 router.get("/products/:productId", productController.getProductDetail)
-// 因為購物車不一定要登入的使用者才能加入購物車，所以不用經過驗證的middlerware
 
+// 購物車頁
+// 因為購物車不一定要登入的使用者才能加入購物車，所以不用經過驗證的middlerware
 router.post("/cart", cartController.addCartItem)
 router.delete("/cart", cartController.deleteCartItem)
 router.get("/cart/:cartId", cartController.getCartItems)
 
+// 結帳頁
 router.post(
     "/checkout",
     upload.array(),
     authenticated,
-    userController.createOrder
+    orderController.createOrder
 )
 
-// 後台
+router.get(
+    "/checkout/payment/:orderId",
+    authenticated,
+    orderController.getPayment
+)
+
+router.post("/spgateway/callback", orderController.spgatewayCallback)
+
+// ---後台---
 router.get(
     "/admin/members",
     authenticated,
