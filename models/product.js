@@ -31,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
         Product.belongsTo(models.Category3)
         Product.hasMany(models.OrderItem)
         Product.hasMany(models.CartItem)
+        Product.belongsToMany(models.User, {
+            through: models.Following,
+            foreignKey: "ProductId",
+            as: "FollowedByUsers",
+        })
     }
     return Product
 }

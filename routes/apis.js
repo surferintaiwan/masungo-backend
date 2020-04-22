@@ -24,6 +24,14 @@ const authenticatedAdmin = (req, res, next) => {
     }
 }
 
+const authenticatedHasTokenOrNot = (req, res, next) => {
+    if (req.headers.authorization) {
+        authenticated
+    } else {
+        return next()
+    }
+}
+
 // 註冊/登入
 router.post("/signup", userController.signUp)
 router.post("/signIn", userController.signIn)
@@ -37,8 +45,6 @@ router.get("/index", authenticated, (req, res) => {
 })
 // 獲取現在登入的使用者資訊
 router.get("/getcurrentuser", authenticated, (req, res) => {
-    console.log(req.session)
-    console.log(req.sessionId)
     res.json({ user: req.user })
 })
 
@@ -50,6 +56,16 @@ router.get("/categories", productController.getProductsByCategory)
 
 // 商品詳細頁
 router.get("/products/:productId", productController.getProductDetail)
+router.post(
+    "/products/:productId",
+    authenticated,
+    userController.addFollowingProduct
+)
+router.delete(
+    "/products/:productId",
+    authenticated,
+    userController.deleteFollowingProduct
+)
 
 // 購物車頁
 // 因為購物車不一定要登入的使用者才能加入購物車，所以不用經過驗證的middlerware

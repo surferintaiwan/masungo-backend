@@ -1,4 +1,4 @@
-const db = require('../models')
+const db = require("../models")
 const Category1 = db.Category1
 const Product = db.Product
 
@@ -17,32 +17,43 @@ const productController = {
         // 判斷是否有帶大/中/小分類的Id，才會去查詢該分類相關的商品
         const whereQuery = {}
         if (category1Id) {
-            whereQuery['category1Id'] = category1Id
+            whereQuery["category1Id"] = category1Id
         } else if (category2Id) {
-            whereQuery['category2Id'] = category2Id
+            whereQuery["category2Id"] = category2Id
         } else if (category3Id) {
-            whereQuery['category3Id'] = category3Id
+            whereQuery["category3Id"] = category3Id
         }
 
         // 判斷有帶品牌Id，才會去查詢該品牌相關的商品
         if (brandId) {
-            whereQuery['brandId'] = brandId
+            whereQuery["brandId"] = brandId
         }
 
         Product.findAll({
-            where: whereQuery
+            where: whereQuery,
         }).then((products) => {
             res.json({ products: products })
         })
     },
     getProductDetail: (req, res) => {
-        console.log(123)
+        console.log(111111111, req.user)
         Product.findByPk(req.params.productId, {
-            include: [{ model: db.Brand }]
+            include: [
+                { model: db.Brand },
+                { model: db.User, as: "FollowedByUsers" },
+            ],
         }).then((product) => {
-            res.json({ product: product })
+            const userId = -1 || req.user.id
+            product = {
+                ...product.dataValues,
+                isFollowed: product.FollowedByUsers.map((d) => d.id).includes(
+                    userId
+                ),
+            }
+            console.log(userId)
+            res.json({ product })
         })
-    }
+    },
 }
 
 module.exports = productController

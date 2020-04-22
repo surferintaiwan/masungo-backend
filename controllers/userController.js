@@ -5,6 +5,7 @@ const User = db.User
 const Order = db.Order
 const OrderItem = db.OrderItem
 const Product = db.Product
+const Following = db.Following
 
 // 用自己的gmail當作mail server發信
 
@@ -90,6 +91,25 @@ const userController = {
             include: [{ model: OrderItem, include: [{ model: Product }] }],
         }).then((orders) => {
             res.json({ orders })
+        })
+    },
+    addFollowingProduct: (req, res) => {
+        Following.create({
+            UserId: req.user.id,
+            ProductId: req.params.productId,
+        }).then((following) => {
+            console.log("新增追蹤商品成功")
+            res.json({ status: "success" })
+        })
+    },
+    deleteFollowingProduct: (req, res) => {
+        Following.findOne({
+            where: { UserId: req.user.id, ProductId: req.params.productId },
+        }).then((following) => {
+            following.destroy().then((following) => {
+                console.log("移除追蹤商品成功")
+                res.json({ status: "success" })
+            })
         })
     },
 }
