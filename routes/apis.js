@@ -57,6 +57,9 @@ router.post("/cart", cartController.addCartItem)
 router.delete("/cart", cartController.deleteCartItem)
 router.get("/cart/:cartId", cartController.getCartItems)
 
+// 會員中心
+router.get("/member/orders", authenticated, userController.getOrders)
+
 // 結帳頁
 router.post(
     "/checkout",

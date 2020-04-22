@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 const db = require("../models")
 const User = db.User
+const Order = db.Order
+const OrderItem = db.OrderItem
+const Product = db.Product
 
 // 用自己的gmail當作mail server發信
 
@@ -78,6 +81,15 @@ const userController = {
                     email: user.email,
                 },
             })
+        })
+    },
+    getOrders: (req, res) => {
+        // 撈出這個使用者所有Order，還有關聯的OrderItems、Products
+        Order.findAll({
+            where: { userId: req.user.id },
+            include: [{ model: OrderItem, include: [{ model: Product }] }],
+        }).then((orders) => {
+            res.json({ orders })
         })
     },
 }

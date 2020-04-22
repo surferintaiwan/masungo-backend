@@ -1,9 +1,9 @@
 const db = require("../models")
 const User = db.User
 const Order = db.Order
-const Cart = db.Cart
 const CartItem = db.CartItem
 const OrderItem = db.OrderItem
+const PaymentRecord = db.PaymentRecord
 const nodemailer = require("nodemailer")
 const crypto = require("crypto")
 
@@ -16,10 +16,10 @@ const transporter = nodemailer.createTransport({
 })
 
 // 產生交易資料給藍新
-const URL = "http://77ffb1f0.ngrok.io/api"
-const MerchantID = "MS310157268 "
-const HashKey = "HzuafzJ4vfNpDul7GJKMjHtBLMmSR0bf"
-const HashIV = "Cb4bJdhJI3N9WLSP"
+const URL = process.env.URL
+const MerchantID = process.env.MerchantID
+const HashKey = process.env.HashKey
+const HashIV = process.env.HashIV
 const PayGateWay = "https://ccore.spgateway.com/MPG/mpg_gateway" // 要把交易資料以formdata格式打給API的網址
 const ReturnURL = URL + "/spgateway/callback?from=ReturnURL"
 const NotifyURL = URL + "/spgateway/callback?from=NotifyURL"
@@ -49,22 +49,28 @@ function create_mpg_sha_encrypt(TradeInfo) {
     return sha.update(plainText).digest("hex").toUpperCase()
 }
 
-function getFinalTradeInfo(amt, desc, email) {
-    console.log("===== getTradeInfo =====")
-    console.log(amt, desc, email)
+function getFinalTradeInfo(
+    orderId,
+    orderAmount,
+    orderUserName,
+    orderUserEmail
+) {
+    console.log("===== getOriginalTradeInfo =====")
+    console.log(orderAmount, orderUserName, orderUserEmail)
     console.log("==========")
 
+    const timeStamp = Date.now()
     const data = {
         MerchantID: MerchantID, // 商店代號
         Version: 1.5, // 串接版本
         RespondType: "JSON",
-        TimeStamp: Date.now(), //時間戳記
-        MerchantOrderNo: Date.now(), // 訂單編號
+        TimeStamp: timeStamp, //時間戳記
+        MerchantOrderNo: timeStamp, // 訂單編號
         LoginType: 0, // 是否要登入智付通會員
         OrderComment: "OrderComment", // 商店備註
-        Amt: amt, //訂單金額
-        ItemDesc: desc, // 先以使用者名稱暫代
-        Email: email, // 付款人email
+        Amt: orderAmount, //訂單金額
+        ItemDesc: orderUserName, // 先以使用者名稱暫代
+        Email: orderUserEmail, // 付款人email
         ReturnURL: ReturnURL, // 支付完成返回商店網址(會回傳一次)
         NotifyURL: NotifyURL, // 支付完成回傳(會回傳三次)
         ClientBackURL: ClientBackURL, // 支付取消返回商店網址
@@ -86,10 +92,24 @@ function getFinalTradeInfo(amt, desc, email) {
         TradeSha: mpg_sha_encrypt,
         Version: 1.5,
         PayGateWay: PayGateWay,
+        timeStamp: timeStamp,
     }
 
     console.log("===== getTradeInfo: finalTradeInfo =====")
     console.log(finalTradeInfo)
+
+    // // 這一段留著問助教，為什麼這樣寫外面會收不到資料
+    // // 這邊要記錄每次發起交易的紀錄，因為有可能使用者這次交易失敗，過10分鐘又發起交易
+    // PaymentRecord.create({
+    //     OrderId: orderId,
+    //     amount: orderAmount,
+    //     paymentStatus: false, // 預設是false，等到使用者去到藍新那邊刷卡成功，藍新回覆給我們的時候才透過merChantOrderNumber查詢這張表，並轉成true
+    //     merchantOrderNumber: timeStamp,
+    // }).then((paymentRecord) => {
+    //     console.log("交易紀錄已寫入")
+    //     return finalTradeInfo
+    // })
+
     return finalTradeInfo
 }
 
@@ -171,9 +191,17 @@ const orderController = {
                 order.User.name,
                 order.User.email
             )
-
-            // 把剛產出的MerchantOrderNo存到PaymentRecord，要寫之前記得把migration、model、seeder增加merchantOrderNo欄位
-            return res.json({ orderAmount: order.amount, finalTradeInfo })
+            // 這邊要記錄每次發起交易的紀錄，因為有可能使用者這次交易失敗，過10分鐘又發起交易
+            return PaymentRecord.create({
+                OrderId: order.id,
+                amount: order.amount,
+                paymentStatus: false, // 預設是false，等到使用者去到藍新那邊刷卡成功，藍新回覆給我們的時候才透過merChantOrderNumber查詢這張表，並轉成true
+                merchantOrderNumber: finalTradeInfo.timeStamp,
+            }).then((paymentRecord) => {
+                console.log("交易紀錄已寫入")
+                return res.json({ orderAmount: order.amount, finalTradeInfo })
+            })
+            // return res.json({ orderAmount: order.amount, finalTradeInfo })
         })
     },
     spgatewayCallback: (req, res) => {
