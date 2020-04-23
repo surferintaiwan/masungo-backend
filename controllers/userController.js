@@ -84,6 +84,25 @@ const userController = {
             })
         })
     },
+    getCurrentUser: (req, res) => {
+        const user = {
+            ...req.user.dataValues,
+            password: "",
+        }
+        res.json({ user })
+    },
+    updateUser: (req, res) => {
+        console.log(11111, req.body)
+        User.findByPk(req.user.id).then((user) => {
+            user.update({
+                name: req.body.name,
+                gender: req.body.gender,
+                birthday: req.body.birthday,
+            }).then((user) => {
+                res.json({ status: "success" })
+            })
+        })
+    },
     getOrders: (req, res) => {
         // 撈出這個使用者所有Order，還有關聯的OrderItems、Products
         Order.findAll({
@@ -110,6 +129,13 @@ const userController = {
                 console.log("移除追蹤商品成功")
                 res.json({ status: "success" })
             })
+        })
+    },
+    getFollowings: (req, res) => {
+        User.findByPk(req.user.id, {
+            include: [{ model: Product, as: "FollowingProducts" }],
+        }).then((user) => {
+            res.json({ followingProducts: user.FollowingProducts })
         })
     },
 }

@@ -33,7 +33,7 @@ const authenticatedHasTokenOrNot = (req, res, next) => {
 }
 
 // 註冊/登入
-router.post("/signup", userController.signUp)
+router.post("/signup", upload.array(), userController.signUp)
 router.post("/signIn", userController.signIn)
 
 // ---前台---
@@ -44,9 +44,7 @@ router.get("/index", authenticated, (req, res) => {
     })
 })
 // 獲取現在登入的使用者資訊
-router.get("/getcurrentuser", authenticated, (req, res) => {
-    res.json({ user: req.user })
-})
+router.get("/getcurrentuser", authenticated, userController.getCurrentUser)
 
 // 獲取所有商品分類
 router.get("/getallcategories", productController.getAllCategories)
@@ -75,6 +73,13 @@ router.get("/cart/:cartId", cartController.getCartItems)
 
 // 會員中心
 router.get("/member/orders", authenticated, userController.getOrders)
+router.get("/member/followings", authenticated, userController.getFollowings)
+router.put(
+    "/member/edit",
+    upload.array(),
+    authenticated,
+    userController.updateUser
+)
 
 // 結帳頁
 router.post(
