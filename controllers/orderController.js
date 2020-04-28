@@ -21,8 +21,9 @@ const MerchantID = process.env.MerchantID
 const HashKey = process.env.HashKey
 const HashIV = process.env.HashIV
 const PayGateWay = "https://ccore.spgateway.com/MPG/mpg_gateway" // 要把交易資料以formdata格式打給API的網址
-const ReturnURL = URL + "/spgateway/callback?from=ReturnURL"
-const NotifyURL = URL + "/spgateway/callback?from=NotifyURL"
+const ReturnURL = URL + "/api/spgateway/callback?from=ReturnURL"
+// const ReturnURL = "http://localhost:8080/#/checkout"
+const NotifyURL = URL + "/api/spgateway/callback?from=NotifyURL"
 const ClientBackURL = URL + "/checkout"
 
 // 1.產生交易資料之字串
@@ -49,12 +50,16 @@ function create_mpg_sha_encrypt(TradeInfo) {
     return sha.update(plainText).digest("hex").toUpperCase()
 }
 
-function getFinalTradeInfo(
-    orderId,
-    orderAmount,
-    orderUserName,
-    orderUserEmail
-) {
+function create_mpg_aes_decrypt(TradeInfo) {
+    let decrypt = crypto.createDecipheriv("aes256", HashKey, HashIV)
+    decrypt.setAutoPadding(false)
+    let text = decrypt.update(TradeInfo, "hex", "utf8")
+    let plainText = text + decrypt.final("utf8")
+    let result = plainText.replace(/[\x00-\x20]+/g, "")
+    return result
+}
+
+function getFinalTradeInfo(orderAmount, orderUserName, orderUserEmail) {
     console.log("===== getOriginalTradeInfo =====")
     console.log(orderAmount, orderUserName, orderUserEmail)
     console.log("==========")
@@ -62,7 +67,7 @@ function getFinalTradeInfo(
     const timeStamp = Date.now()
     const data = {
         MerchantID: MerchantID, // 商店代號
-        Version: 1.5, // 串接版本
+        Version: "1.5", // 串接版本
         RespondType: "JSON",
         TimeStamp: timeStamp, //時間戳記
         MerchantOrderNo: timeStamp, // 訂單編號
@@ -90,7 +95,7 @@ function getFinalTradeInfo(
         MerchantID: MerchantID,
         TradeInfo: mpg_aes_encrypt,
         TradeSha: mpg_sha_encrypt,
-        Version: 1.5,
+        Version: "1.5",
         PayGateWay: PayGateWay,
         timeStamp: timeStamp,
     }
@@ -210,6 +215,36 @@ const orderController = {
         console.log(req.query)
         console.log(req.body)
         console.log("==========")
+        // 把藍新回傳的資料反解
+        const data = JSON.parse(create_mpg_aes_decrypt(req.body.TradeInfo))
+        console.log(
+            "===== spgatewayCallback: create_mpg_aes_decrypt、data ====="
+        )
+        console.log(data)
+
+        // 透過藍新回傳的資料更新交易紀錄
+        PaymentRecord.findOne({
+            where: { merchantOrderNumber: data.Result.MerchantOrderNo },
+        }).then((paymentRecord) => {
+            // 將付款狀態從原本的付款未完成0，變成付款已完成1
+            paymentRecord
+                .update({
+                    paymentStatus: 1,
+                })
+                .then((paymentRecord) => {
+                    // 更新訂單狀態從原本的待付款1，變成訂單處理中2
+                    Order.findByPk(paymentRecord.OrderId).then((order) => {
+                        order
+                            .update({
+                                OrderStatusId: 2,
+                            })
+                            .then((order) => {
+                                // 跳轉回前端首頁
+                                res.redirect("http://localhost:8080")
+                            })
+                    })
+                })
+        })
     },
 }
 

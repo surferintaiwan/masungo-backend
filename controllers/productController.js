@@ -36,21 +36,19 @@ const productController = {
         })
     },
     getProductDetail: (req, res) => {
-        console.log(111111111, req.user)
         Product.findByPk(req.params.productId, {
             include: [
                 { model: db.Brand },
                 { model: db.User, as: "FollowedByUsers" },
             ],
         }).then((product) => {
-            const userId = -1 || req.user.id
+            req.user ? (userId = req.user.id) : (userId = -1)
             product = {
                 ...product.dataValues,
                 isFollowed: product.FollowedByUsers.map((d) => d.id).includes(
                     userId
                 ),
             }
-            console.log(userId)
             res.json({ product })
         })
     },
