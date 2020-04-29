@@ -10,7 +10,7 @@ const cartController = require("../controllers/cartController")
 const orderController = require("../controllers/orderController")
 
 const multer = require("multer")
-const upload = multer()
+const upload = multer({ dest: "temp/" })
 
 const authenticated = passport.authenticate("jwt", { session: false })
 const authenticatedAdmin = (req, res, next) => {
@@ -25,8 +25,9 @@ const authenticatedAdmin = (req, res, next) => {
 }
 
 const authenticatedHasTokenOrNot = (req, res, next) => {
+    console.log(req.headers.authorization)
     if (req.headers.authorization) {
-        authenticated
+        authenticated(req, res, next)
     } else {
         return next()
     }
@@ -37,12 +38,7 @@ router.post("/signup", upload.array(), userController.signUp)
 router.post("/signIn", userController.signIn)
 
 // ---前台---
-// 首頁
-router.get("/index", authenticated, (req, res) => {
-    Product.findAll().then((products) => {
-        return res.json({ products: products })
-    })
-})
+
 // 獲取現在登入的使用者資訊
 router.get("/getcurrentuser", authenticated, userController.getCurrentUser)
 
@@ -53,7 +49,11 @@ router.get("/getallcategories", productController.getAllCategories)
 router.get("/categories", productController.getProductsByCategory)
 
 // 商品詳細頁
-router.get("/products/:productId", productController.getProductDetail)
+router.get(
+    "/products/:productId",
+    authenticatedHasTokenOrNot,
+    productController.getProductDetail
+)
 router.post(
     "/products/:productId",
     authenticated,
@@ -102,7 +102,59 @@ router.get(
     "/admin/members",
     authenticated,
     authenticatedAdmin,
-    adminController.getMembers
+    adminController.getAllMembers
 )
 
+router.get(
+    "/admin/products",
+    authenticated,
+    authenticatedAdmin,
+    adminController.getAllProducts
+)
+
+router.get(
+    "/admin/getAllBrandsAndCategories",
+    authenticated,
+    authenticatedAdmin,
+    adminController.getAllBrandsAndCategories
+)
+
+router.post(
+    "/admin/products",
+    upload.fields([
+        { name: "image1" },
+        { name: "image2" },
+        { name: "image3" },
+        { name: "image4" },
+        { name: "detail" },
+        { name: "deliveryKnow" },
+        { name: "refundKnow" },
+    ]),
+    authenticated,
+    authenticatedAdmin,
+    adminController.addNewProduct
+)
+
+router.get(
+    "/admin/products/:productId",
+    authenticated,
+    authenticatedAdmin,
+    adminController.getProduct
+)
+
+router.post(
+    "/admin/products/:productId",
+    upload.fields([
+        { name: "image1" },
+        { name: "image2" },
+        { name: "image3" },
+        { name: "image4" },
+        { name: "detail" },
+        { name: "deliveryKnow" },
+        { name: "refundKnow" },
+    ]),
+    authenticated,
+    authenticatedAdmin,
+    adminController.updateProduct
+)
 module.exports = router
