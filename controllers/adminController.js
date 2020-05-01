@@ -162,6 +162,48 @@ const adminController = {
             })
         }
     },
+    getCategories: (req, res) => {
+        // 把回傳的query取出來，判斷回傳的是大或中類id去撈對應的中或小類資料表
+        const key = Object.keys(req.query)[0]
+        if (key === "getCategory1s") {
+            Category1.findAll().then((category1s) => {
+                res.json({ category1s })
+            })
+        } else if (key === "category1Id") {
+            Category2.findAll({ where: req.query }).then((category2s) => {
+                res.json({ category2s })
+            })
+        } else if (key === "category2Id") {
+            Category3.findAll({ where: req.query }).then((category3s) => {
+                res.json({ category3s })
+            })
+        }
+    },
+    addCategory: (req, res) => {
+        // 把回傳的query取出來，判斷是要新增大類或中類或小類
+        const whichCategory = req.query.whichCategory
+        if (whichCategory === "category1") {
+            Category1.create({
+                name: req.body.category1Name,
+            }).then((category1) => {
+                res.json({ status: "success" })
+            })
+        } else if (whichCategory === "category2") {
+            Category2.create({
+                Category1Id: req.body.category1Id,
+                name: req.body.category2Name,
+            }).then((category2) => {
+                res.json({ status: "success" })
+            })
+        } else if (whichCategory === "category3") {
+            Category3.create({
+                Category2Id: req.body.category2Id,
+                name: req.body.category3Name,
+            }).then((category3) => {
+                res.json({ status: "success" })
+            })
+        }
+    },
 }
 
 module.exports = adminController

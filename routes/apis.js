@@ -98,6 +98,8 @@ router.get(
 router.post("/spgateway/callback", orderController.spgatewayCallback)
 
 // ---後台---
+
+// 會員中心
 router.get(
     "/admin/members",
     authenticated,
@@ -105,13 +107,13 @@ router.get(
     adminController.getAllMembers
 )
 
+// 商品管理
 router.get(
     "/admin/products",
     authenticated,
     authenticatedAdmin,
     adminController.getAllProducts
 )
-
 router.get(
     "/admin/getAllBrandsAndCategories",
     authenticated,
@@ -157,4 +159,20 @@ router.post(
     authenticatedAdmin,
     adminController.updateProduct
 )
+
+router.get(
+    "/admin/categories",
+    authenticated,
+    authenticatedAdmin,
+    adminController.getCategories
+)
+
+router.post(
+    "/admin/categories",
+    upload.array(),
+    authenticated,
+    authenticatedAdmin,
+    adminController.addCategory
+)
+
 module.exports = router
