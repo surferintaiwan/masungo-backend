@@ -183,4 +183,11 @@ router.post(
     adminController.addCategory
 )
 
+// 訂單管理
+router.get(
+    "/admin/orders",
+    authenticated,
+    authenticatedAdmin,
+    adminController.getAllOrders
+)
 module.exports = router

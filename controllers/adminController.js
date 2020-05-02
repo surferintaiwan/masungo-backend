@@ -8,7 +8,9 @@ const Category1 = db.Category1
 const Category2 = db.Category2
 const Category3 = db.Category3
 const Order = db.Order
+const OrderStatus = db.OrderStatus
 const URL = process.env.URL
+
 const adminController = {
     getAllMembers: (req, res) => {
         User.findAll({ include: [{ model: Order }] }).then((users) => {
@@ -217,6 +219,13 @@ const adminController = {
                 res.json({ status: "success" })
             })
         }
+    },
+    getAllOrders: (req, res) => {
+        Order.findAll({
+            include: [{ model: User }, { model: OrderStatus }],
+        }).then((orders) => {
+            res.json({ orders })
+        })
     },
 }
 
