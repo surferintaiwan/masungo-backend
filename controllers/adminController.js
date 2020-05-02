@@ -7,15 +7,25 @@ const Brand = db.Brand
 const Category1 = db.Category1
 const Category2 = db.Category2
 const Category3 = db.Category3
+const Order = db.Order
 const URL = process.env.URL
 const adminController = {
     getAllMembers: (req, res) => {
-        User.findAll().then((users) => {
-            const filterUsers = {
-                ...users.dataValues,
-            }
+        User.findAll({ include: [{ model: Order }] }).then((users) => {
+            const updateUsers = users.map((user) => {
+                let totalAmount = 0 // 為什麼不能用const呢?
+                user.Orders.forEach((order) => {
+                    totalAmount += order.amount
+                })
+                return {
+                    ...user.dataValues,
+                    totalAmount,
+                }
+            })
+            res.json({ users: updateUsers })
         })
     },
+    updateMember: (req, res) => {},
     getAllProducts: (req, res) => {
         Product.findAll().then((products) => {
             res.json({ products })

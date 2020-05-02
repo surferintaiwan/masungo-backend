@@ -99,12 +99,19 @@ router.post("/spgateway/callback", orderController.spgatewayCallback)
 
 // ---後台---
 
-// 會員中心
+// 會員管理
 router.get(
     "/admin/members",
     authenticated,
     authenticatedAdmin,
     adminController.getAllMembers
+)
+
+router.post(
+    "/admin/members/:userId",
+    authenticated,
+    authenticatedAdmin,
+    adminController.updateMember
 )
 
 // 商品管理
@@ -160,6 +167,7 @@ router.post(
     adminController.updateProduct
 )
 
+// 分類管理
 router.get(
     "/admin/categories",
     authenticated,
