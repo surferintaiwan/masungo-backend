@@ -12,7 +12,8 @@ const URL = process.env.URL
 const adminController = {
     getAllMembers: (req, res) => {
         User.findAll({ include: [{ model: Order }] }).then((users) => {
-            const updateUsers = users.map((user) => {
+            let updatedUsers = users.map((user) => {
+                // 連這個也要用let才行
                 let totalAmount = 0 // 為什麼不能用const呢?
                 user.Orders.forEach((order) => {
                     totalAmount += order.amount
@@ -22,7 +23,10 @@ const adminController = {
                     totalAmount,
                 }
             })
-            res.json({ users: updateUsers })
+            updatedUsers = updatedUsers.sort((a, b) => {
+                return a.id - b.id
+            })
+            res.json({ members: updatedUsers })
         })
     },
     updateMember: (req, res) => {},
