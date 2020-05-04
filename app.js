@@ -3,6 +3,7 @@ const app = express()
 const db = require("./models")
 const bodyParser = require("body-parser")
 const cors = require("cors")
+const port = process.env.PORT || 3000
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -16,7 +17,7 @@ if (process.env.NODE_env !== "production") {
     require("dotenv").config()
 }
 
-app.listen(3000, () => {
+app.listen(port, () => {
     db.sequelize.sync() //確認DB連線正常
     console.log("localhost:3000 is listenting")
 })
