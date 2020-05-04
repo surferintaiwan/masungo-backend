@@ -9,7 +9,15 @@ const Category2 = db.Category2
 const Category3 = db.Category3
 const Order = db.Order
 const OrderStatus = db.OrderStatus
-const URL = process.env.URL
+let URL = ""
+
+// 為了在本地端測試時，上傳圖片能夠上傳到本地端的路徑，所以加了這個判斷看是不是已經上到正式環境了，
+// 不加這判斷直接用URL = process.env.URL的話，會一直都是用設定好的環境變數
+if (process.env.NODE_env !== "production") {
+    URL = "http://localhost:3000"
+} else {
+    URL = process.env.URL
+}
 
 const adminController = {
     getAllMembers: (req, res) => {
@@ -190,6 +198,7 @@ const adminController = {
             })
         } else if (key === "category1Id") {
             Category2.findAll({ where: req.query }).then((category2s) => {
+                console.log(category2s)
                 res.json({ category2s })
             })
         } else if (key === "category2Id") {
