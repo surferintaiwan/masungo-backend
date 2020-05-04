@@ -62,19 +62,22 @@ const adminController = {
             // files裡面是一包物件，所以需要跑物件迴圈把每一個圖片取出來做轉移
             for (let [key, value] of Object.entries(files)) {
                 results.push(
-                    fsPromises.readFile(value[0].path).then((data) => {
-                        return fsPromises
-                            .writeFile(`upload/${value[0].originalname}`, data)
-                            .then(() => {
-                                return (filesNewPath[
-                                    key
-                                ] = `${URL}/upload/${value[0].originalname}`) // 因為是前後端分離，前後端會是不同網址，所以要在資料庫存進完整的圖片網址路徑
-                            })
-                    })
+                    (async function () {
+                        let data = await fsPromises.readFile(value[0].path)
+                        let final = await fsPromises.writeFile(
+                            `upload/${value[0].originalname}`,
+                            data
+                        )
+                        return (filesNewPath[
+                            key
+                        ] = `${URL}/upload/${value[0].originalname}`)
+                    })()
                 )
             }
             // 確定所有圖片都轉移至upload後才新增到資料庫
+
             return Promise.all(results).then(() => {
+                console.log(results)
                 return Product.create({
                     name: req.body.name,
                     BrandId: req.body.brandId,
