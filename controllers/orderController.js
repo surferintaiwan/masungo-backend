@@ -215,36 +215,42 @@ const orderController = {
         console.log(req.query)
         console.log(req.body)
         console.log("==========")
-        // 把藍新回傳的資料反解
-        const data = JSON.parse(create_mpg_aes_decrypt(req.body.TradeInfo))
-        console.log(
-            "===== spgatewayCallback: create_mpg_aes_decrypt、data ====="
-        )
-        console.log(data)
 
-        // 透過藍新回傳的資料更新交易紀錄
-        PaymentRecord.findOne({
-            where: { merchantOrderNumber: data.Result.MerchantOrderNo },
-        }).then((paymentRecord) => {
-            // 將付款狀態從原本的付款未完成0，變成付款已完成1
-            paymentRecord
-                .update({
-                    paymentStatus: 1,
-                })
-                .then((paymentRecord) => {
-                    // 更新訂單狀態從原本的待付款1，變成訂單處理中2
-                    Order.findByPk(paymentRecord.OrderId).then((order) => {
-                        order
-                            .update({
-                                OrderStatusId: 2,
-                            })
-                            .then((order) => {
-                                // 跳轉回前端首頁
-                                res.redirect("http://localhost:8080")
-                            })
+        // 判斷回來的query是ReturnURL還是NotifyURL
+        if (req.query.from === "NotifyURL") {
+            return
+        } else if (req.query.from === "ReturnURL") {
+            // 把藍新回傳的資料反解
+            const data = JSON.parse(create_mpg_aes_decrypt(req.body.TradeInfo))
+            console.log(
+                "===== spgatewayCallback: create_mpg_aes_decrypt、data ====="
+            )
+            console.log(data)
+
+            // 透過藍新回傳的資料更新交易紀錄
+            PaymentRecord.findOne({
+                where: { merchantOrderNumber: data.Result.MerchantOrderNo },
+            }).then((paymentRecord) => {
+                // 將付款狀態從原本的付款未完成0，變成付款已完成1
+                paymentRecord
+                    .update({
+                        paymentStatus: 1,
                     })
-                })
-        })
+                    .then((paymentRecord) => {
+                        // 更新訂單狀態從原本的待付款1，變成訂單處理中2
+                        Order.findByPk(paymentRecord.OrderId).then((order) => {
+                            order
+                                .update({
+                                    OrderStatusId: 2,
+                                })
+                                .then((order) => {
+                                    // 跳轉回前端首頁
+                                    res.redirect("http://localhost:8080")
+                                })
+                        })
+                    })
+            })
+        }
     },
 }
 
