@@ -6,6 +6,7 @@ const Order = db.Order
 const OrderItem = db.OrderItem
 const Product = db.Product
 const Following = db.Following
+const OrderStatus = db.OrderStatus
 
 // 用自己的gmail當作mail server發信
 
@@ -107,8 +108,12 @@ const userController = {
         // 撈出這個使用者所有Order，還有關聯的OrderItems、Products
         Order.findAll({
             where: { userId: req.user.id },
-            include: [{ model: OrderItem, include: [{ model: Product }] }],
+            include: [
+                { model: OrderItem, include: [{ model: Product }] },
+                { model: OrderStatus },
+            ],
         }).then((orders) => {
+            orders = orders.sort((a, b) => b.id - a.id)
             res.json({ orders })
         })
     },

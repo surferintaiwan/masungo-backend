@@ -24,7 +24,7 @@ const PayGateWay = "https://ccore.spgateway.com/MPG/mpg_gateway" // 要把交易
 const ReturnURL = URL + "/api/spgateway/callback?from=ReturnURL"
 // const ReturnURL = "http://localhost:8080/#/checkout"
 const NotifyURL = URL + "/api/spgateway/callback?from=NotifyURL"
-const ClientBackURL = URL + "/checkout"
+const ClientBackURL = "https://surferintaiwan.github.io/masungo-frontend/#/cart"
 
 // 1.產生交易資料之字串
 function genDataChain(TradeInfo) {
@@ -245,7 +245,9 @@ const orderController = {
                                 })
                                 .then((order) => {
                                     // 跳轉回前端首頁
-                                    res.redirect("http://localhost:8080")
+                                    res.redirect(
+                                        "https://surferintaiwan.github.io/masungo-frontend/#/member/orders"
+                                    )
                                 })
                         })
                     })
