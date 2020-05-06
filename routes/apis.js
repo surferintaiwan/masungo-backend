@@ -46,7 +46,11 @@ router.get("/getcurrentuser", authenticated, userController.getCurrentUser)
 router.get("/getallcategories", productController.getAllCategories)
 
 // 商品分類頁
-router.get("/categories", productController.getProductsByCategory)
+router.get(
+    "/categories",
+    authenticatedHasTokenOrNot,
+    productController.getProductsByCategory
+)
 
 // 商品詳細頁
 router.get(

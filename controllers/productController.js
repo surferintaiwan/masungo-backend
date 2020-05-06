@@ -32,7 +32,25 @@ const productController = {
         Product.findAll({
             where: whereQuery,
         }).then((products) => {
-            res.json({ products: products })
+            // 判斷有沒有帶token，有帶token進來的來就要去比對，否則就直接回傳沒有加工過的product回去
+            if (req.user) {
+                // 要比對每個商品是不是有被縣在這個使用者追蹤過，在每個商品塞個isFollowed回去
+                // 所以要把所有商品跑迴圈一個一個取出，跟現在這個使用者有追蹤過的商品比對
+                products = products.map((product) => {
+                    return {
+                        ...product.dataValues,
+                        // 比對看看使用者所有追蹤商品中有沒有現在這個product，去回傳true或flase
+                        isFollowed: req.user.FollowingProducts.map(
+                            (followingProduct) => {
+                                return followingProduct.id
+                            }
+                        ).includes(product.id),
+                    }
+                })
+                res.json({ products })
+            } else {
+                res.json({ products })
+            }
         })
     },
     getProductDetail: (req, res) => {
