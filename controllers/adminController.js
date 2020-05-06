@@ -230,6 +230,40 @@ const adminController = {
             res.json({ orders })
         })
     },
+    getAllBrands: (req, res) => {
+        Brand.findAll({ include: [{ model: Product }] }).then((brands) => {
+            res.json({ brands })
+        })
+    },
+    addBrand: (req, res) => {
+        if (req.body.brandName === "") {
+            res.json({ status: "error", text: "您未輸入任何文字" })
+        } else {
+            Brand.create({
+                name: req.body.brandName,
+            }).then((brand) => {
+                res.json({ status: "success", brand })
+            })
+        }
+    },
+    updateBrand: (req, res) => {
+        Brand.findByPk(req.body.brandId).then((brand) => {
+            brand
+                .update({
+                    name: req.body.brandName,
+                })
+                .then((brand) => {
+                    res.json({ status: "success" })
+                })
+        })
+    },
+    deleteBrand: (req, res) => {
+        Brand.findByPk(req.query.brandId).then((brand) => {
+            brand.destroy().then((brand) => {
+                res.json({ status: "success" })
+            })
+        })
+    },
 }
 
 module.exports = adminController

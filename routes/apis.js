@@ -190,4 +190,30 @@ router.get(
     authenticatedAdmin,
     adminController.getAllOrders
 )
+
+// 品牌管理
+router.get(
+    "/admin/brands",
+    authenticated,
+    authenticatedAdmin,
+    adminController.getAllBrands
+)
+router.post(
+    "/admin/brands",
+    authenticated,
+    authenticatedAdmin,
+    adminController.addBrand
+)
+router.put(
+    "/admin/brands",
+    authenticated,
+    authenticatedAdmin,
+    adminController.updateBrand
+)
+router.delete(
+    "/admin/brands",
+    authenticated,
+    authenticatedAdmin,
+    adminController.deleteBrand
+)
 module.exports = router
