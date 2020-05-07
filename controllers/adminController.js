@@ -205,7 +205,7 @@ const adminController = {
             Category1.create({
                 name: req.body.category1Name,
             }).then((category1) => {
-                res.json({ status: "success" })
+                res.json({ status: "success", category1 })
             })
         } else if (whichCategory === "category2") {
             Category2.create({
@@ -220,6 +220,65 @@ const adminController = {
                 name: req.body.category3Name,
             }).then((category3) => {
                 res.json({ status: "success" })
+            })
+        }
+    },
+    updateCategory: (req, res) => {
+        // 把回傳的query取出來，判斷是要編輯大類或中類或小類
+        const whichCategory = req.query.whichCategory
+        if (whichCategory === "category1") {
+            Category1.findByPk(req.body.category1Id).then((category1) => {
+                category1
+                    .update({
+                        name: req.body.category1Name,
+                    })
+                    .then((category1) => {
+                        res.json({ status: "success", category1 })
+                    })
+            })
+        } else if (whichCategory === "category2") {
+            Category2.findByPk(req.body.category2Id).then((category2) => {
+                category2
+                    .update({
+                        name: req.body.category2Name,
+                    })
+                    .then((category2) => {
+                        res.json({ status: "success" })
+                    })
+            })
+        } else if (whichCategory === "category3") {
+            Category3.findByPk(req.body.category3Id).then((category3) => {
+                category3
+                    .update({
+                        name: req.body.category3Name,
+                    })
+                    .then((category3) => {
+                        res.json({ status: "success" })
+                    })
+            })
+        }
+    },
+    deleteCategory: (req, res) => {
+        // 把回傳的query取出來，判斷是要刪除大類或中類或小類
+        const whichCategory = req.query.whichCategory
+        console.log(req.query)
+        if (whichCategory === "category1") {
+            Category1.findByPk(req.query.categoryId).then((category1) => {
+                category1.destroy().then((category1) => {
+                    res.json({ status: "success" })
+                })
+            })
+        } else if (whichCategory === "category2") {
+            Category2.findByPk(req.query.categoryId).then((category2) => {
+                category2.destroy().then((category2) => {
+                    res.json({ status: "success" })
+                })
+            })
+        } else if (whichCategory === "category3") {
+            Category3.findByPk(req.query.categoryId).then((category3) => {
+                category3.destroy().then((category3) => {
+                    res.json({ status: "success" })
+                })
             })
         }
     },

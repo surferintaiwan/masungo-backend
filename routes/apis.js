@@ -178,13 +178,25 @@ router.get(
     authenticatedAdmin,
     adminController.getCategories
 )
-
 router.post(
     "/admin/categories",
     upload.array(),
     authenticated,
     authenticatedAdmin,
     adminController.addCategory
+)
+router.put(
+    "/admin/categories",
+    upload.array(),
+    authenticated,
+    authenticatedAdmin,
+    adminController.updateCategory
+)
+router.delete(
+    "/admin/categories",
+    authenticated,
+    authenticatedAdmin,
+    adminController.deleteCategory
 )
 
 // 訂單管理
