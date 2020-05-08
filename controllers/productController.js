@@ -1,12 +1,72 @@
 const db = require("../models")
 const Category1 = db.Category1
 const Product = db.Product
+const Brand = db.Brand
 
 const productController = {
     getAllCategories: (req, res) => {
         Category1.findAll().then((category1s) => {
             res.json({ categories: category1s })
         })
+    },
+    getAllBrands: (req, res) => {
+        console.log(req.query)
+        // 判斷傳進來的是大、中、小類，以及id是甚麼，去找出屬於該類別的商品有哪些
+        // 接著把每個商品所屬的品牌(記得要關聯品牌名稱出來用)撈出來變成一個陣列，把裡面重複的刪除再丟回去給前端
+        const whichCategory = req.query.whichCategory
+        const categoryId = req.query.categoryId
+        if (whichCategory === "category1") {
+            Product.findAll({
+                where: { Category1Id: categoryId },
+                include: [{ model: db.Brand }],
+            }).then((products) => {
+                // 把每個商品的品牌名稱都抽出來組成新的陣列
+                const brands = products.map((product) => {
+                    return product.Brand.dataValues
+                })
+                // 接著比對Brand有沒有重複
+                const filterBrands = brands.filter((item, index, selfArray) => {
+                    return (
+                        selfArray.findIndex((i) => i.id === item.id) === index
+                    )
+                })
+                res.json({ brands: filterBrands })
+            })
+        } else if (whichCategory === "category2") {
+            Product.findAll({
+                where: { Category2Id: categoryId },
+                include: [{ model: db.Brand }],
+            }).then((products) => {
+                // 把每個商品的品牌名稱都抽出來組成新的陣列
+                const brands = products.map((product) => {
+                    return product.Brand.dataValues
+                })
+                // 接著比對Brand有沒有重複
+                const filterBrands = brands.filter((item, index, selfArray) => {
+                    return (
+                        selfArray.findIndex((i) => i.id === item.id) === index
+                    )
+                })
+                res.json({ brands: filterBrands })
+            })
+        } else if (whichCategory === "category3") {
+            Product.findAll({
+                where: { Category3Id: categoryId },
+                include: [{ model: db.Brand }],
+            }).then((products) => {
+                // 把每個商品的品牌名稱都抽出來組成新的陣列
+                const brands = products.map((product) => {
+                    return product.Brand.dataValues
+                })
+                // 接著比對Brand有沒有重複
+                const filterBrands = brands.filter((item, index, selfArray) => {
+                    return (
+                        selfArray.findIndex((i) => i.id === item.id) === index
+                    )
+                })
+                res.json({ brands: filterBrands })
+            })
+        }
     },
     getProductsByCategory: (req, res) => {
         const category1Id = req.query.category1Id

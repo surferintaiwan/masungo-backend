@@ -104,7 +104,7 @@ module.exports = {
                         "http://www.kphoto.com.tw/image/catalog/event/%E7%B6%B2%E8%B3%BC%E5%BF%AB%E9%80%9F%E9%80%81.jpg",
                     refundKnow:
                         "https://motomarket.cc/image/catalog/2019/%E9%A0%81%E9%9D%A2%E7%AE%A1%E7%90%86/201811191554.jpg",
-                    Category1Id: 1,
+                    Category1Id: 2,
                     Category2Id: 2,
                     Category3Id: 3,
                     createdAt: new Date(),

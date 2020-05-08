@@ -25,7 +25,6 @@ const authenticatedAdmin = (req, res, next) => {
 }
 
 const authenticatedHasTokenOrNot = (req, res, next) => {
-    console.log(req.headers.authorization)
     if (req.headers.authorization) {
         authenticated(req, res, next)
     } else {
@@ -51,6 +50,8 @@ router.get(
     authenticatedHasTokenOrNot,
     productController.getProductsByCategory
 )
+
+router.get("/brands", productController.getAllBrands)
 
 // 商品詳細頁
 router.get(
