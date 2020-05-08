@@ -10,7 +10,6 @@ const productController = {
         })
     },
     getAllBrands: (req, res) => {
-        console.log(req.query)
         // 判斷傳進來的是大、中、小類，以及id是甚麼，去找出屬於該類別的商品有哪些
         // 接著把每個商品所屬的品牌(記得要關聯品牌名稱出來用)撈出來變成一個陣列，把裡面重複的刪除再丟回去給前端
         const whichCategory = req.query.whichCategory
@@ -73,9 +72,11 @@ const productController = {
         const category2Id = req.query.category2Id
         const category3Id = req.query.category3Id
         const brandId = req.query.brandId
+        const sort = req.query.sort
+        const whereQuery = {}
+        const sortQuery = []
 
         // 判斷是否有帶大/中/小分類的Id，才會去查詢該分類相關的商品
-        const whereQuery = {}
         if (category1Id) {
             whereQuery["category1Id"] = category1Id
         } else if (category2Id) {
@@ -89,8 +90,20 @@ const productController = {
             whereQuery["brandId"] = brandId
         }
 
+        // 判斷有要求排序方式的話，就要帶不同的排序參數進去
+        if (sort === "sellingPriceDESC") {
+            sortQuery.push(["sellingPrice", "DESC"])
+        } else if (sort === "sellingPriceASC") {
+            sortQuery.push(["sellingPrice", "ASC"])
+        } else if (sort === "createdAtDESC") {
+            sortQuery.push(["createdAt", "DESC"])
+        } else if (sort === "createdAtASC") {
+            sortQuery.push(["createdAt", "ASC"])
+        }
+
         Product.findAll({
             where: whereQuery,
+            order: sortQuery,
         }).then((products) => {
             // 判斷有帶搜尋關鍵字，就要去比對哪些商品符合該關鍵字
             const keyword = req.query.keyword
