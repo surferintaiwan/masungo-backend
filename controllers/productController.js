@@ -92,6 +92,14 @@ const productController = {
         Product.findAll({
             where: whereQuery,
         }).then((products) => {
+            // 判斷有帶搜尋關鍵字，就要去比對哪些商品符合該關鍵字
+            const keyword = req.query.keyword
+            if (keyword) {
+                const regex = new RegExp(keyword, "i")
+                products = products.filter((product) =>
+                    product.name.match(regex)
+                )
+            }
             // 判斷有沒有帶token，有帶token進來的來就要去比對，否則就直接回傳沒有加工過的product回去
             if (req.user) {
                 // 要比對每個商品是不是有被縣在這個使用者追蹤過，在每個商品塞個isFollowed回去
