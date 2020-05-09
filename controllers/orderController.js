@@ -157,8 +157,8 @@ const orderController = {
                         const mailOptions = {
                             from: "seoneedtime@gmail.com",
                             to: user.email,
-                            subject: `${order.id}訂單成立`,
-                            text: `${order.id}訂單成立`,
+                            subject: `馬上購線上購物，訂單編號: ${order.id}，訂單成立`,
+                            text: `謝謝您的訂購!`,
                         }
                         transporter.sendMail(mailOptions, function (
                             error,
@@ -209,6 +209,22 @@ const orderController = {
             // return res.json({ orderAmount: order.amount, finalTradeInfo })
         })
     },
+    getOrderFinish: (req, res) => {
+        Order.findByPk(req.params.orderId, {
+            include: [
+                { model: db.DeliveryMethod },
+                { model: db.PaymentMethod },
+                { model: db.OrderItem, include: [{ model: db.Product }] },
+            ],
+        }).then((order) => {
+            // 判斷這個人是不是該筆訂單擁有者，才回傳資料
+            if (req.user.id === order.UserId) {
+                return res.json({ order })
+            } else {
+                return res.json({ status: "error" })
+            }
+        })
+    },
     spgatewayCallback: (req, res) => {
         console.log("===== spgatewayCallback =====")
         console.log(req.method)
@@ -244,9 +260,10 @@ const orderController = {
                                     OrderStatusId: 2,
                                 })
                                 .then((order) => {
-                                    // 跳轉回前端首頁
+                                    // 跳轉回前端的訂單完成頁
                                     res.redirect(
-                                        "https://surferintaiwan.github.io/masungo-frontend/#/member/orders"
+                                        // `https://surferintaiwan.github.io/masungo-frontend/#/checkout/finish/${order.id}`
+                                        `http://localhost:8080/#/checkout/finish/${order.id}`
                                     )
                                 })
                         })

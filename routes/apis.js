@@ -100,6 +100,12 @@ router.get(
     orderController.getPayment
 )
 
+router.get(
+    "/checkout/finish/:orderId",
+    authenticated,
+    orderController.getOrderFinish
+)
+
 router.post("/spgateway/callback", orderController.spgatewayCallback)
 
 // ---後台---
