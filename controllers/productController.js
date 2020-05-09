@@ -1,12 +1,18 @@
 const db = require("../models")
 const Category1 = db.Category1
+const Category2 = db.Category2
+const Category3 = db.Category3
 const Product = db.Product
 const Brand = db.Brand
 
 const productController = {
     getAllCategories: (req, res) => {
-        Category1.findAll().then((category1s) => {
-            res.json({ categories: category1s })
+        Category1.findAll({
+            include: [
+                { model: db.Category2, include: [{ model: db.Category3 }] },
+            ],
+        }).then((category1s) => {
+            res.json({ category1s })
         })
     },
     getAllBrands: (req, res) => {
