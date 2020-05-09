@@ -158,7 +158,12 @@ const orderController = {
                             from: "seoneedtime@gmail.com",
                             to: user.email,
                             subject: `馬上購線上購物，訂單編號: ${order.id}，訂單成立`,
-                            text: `謝謝您的訂購!`,
+                            html: ` <div style="display: inline-block; min-width: 300px; background-color: white;">
+                            <h1>您在馬上購的訂單成立</h1>
+                            <h2>訂單編號: ${order.id}</h2>
+                            <h3>總金額：${order.amount}</h3>
+                          </div>
+                          `,
                         }
                         transporter.sendMail(mailOptions, function (
                             error,
