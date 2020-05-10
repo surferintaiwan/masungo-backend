@@ -20,7 +20,7 @@ module.exports = {
                 {
                     amount: 500,
                     address: "台北市內湖區健行路80號5樓",
-                    UserId: 2,
+                    UserId: 11, // 原本是2訂單處理中，但上了heroku會跳號，要改成11
                     receiver: "陳大東",
                     DeliveryMethodId: 1,
                     PaymentMethodId: 1,
