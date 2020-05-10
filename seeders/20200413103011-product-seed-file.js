@@ -5,16 +5,17 @@ const faker = require("faker")
 module.exports = {
     up: (queryInterface, Sequelize) => {
         // 總共新增30筆產品資料，分3次10筆新增
-        // 10筆: 居家> 水杯/水瓶/水壺> 保冰/溫杯瓶
-        // 10筆: 居家> 水杯/水瓶/水壺> 馬克杯/水杯
-        // 10筆: 家電> 清潔家電> 圓筒吸塵器
+        // 10筆: 類別:3C> 通訊設備> 手機 品牌:三星
+        // 6筆: 類別:居家> 家具> 沙發 品牌:IKEA
+        // 2筆: 類別:居家> 家電> 吸塵器 品牌:Dyson
+        // 2筆: 類別:居家> 家電> 吸塵器 品牌:iRobot
         queryInterface.bulkInsert(
             "Products",
             Array.from({ length: 10 }).map((d) => {
                 const listPrice = faker.commerce.price()
                 return {
                     name: faker.commerce.productName(),
-                    BrandId: Math.floor(Math.random() * 5) * 10 + 1, // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
+                    BrandId: 1,
                     listPrice: listPrice,
                     sellingPrice: listPrice - 10,
                     inventory: faker.random.number(),
@@ -45,11 +46,11 @@ module.exports = {
         )
         queryInterface.bulkInsert(
             "Products",
-            Array.from({ length: 10 }).map((d) => {
+            Array.from({ length: 6 }).map((d) => {
                 const listPrice = faker.commerce.price()
                 return {
                     name: faker.commerce.productName(),
-                    BrandId: Math.floor(Math.random() * 5) * 10 + 1, // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
+                    BrandId: 11, // 原本只要寫2就可以了，但因為heroku會跳10號，所以要改寫
                     listPrice: listPrice,
                     sellingPrice: listPrice - 10,
                     inventory: faker.random.number(),
@@ -69,8 +70,8 @@ module.exports = {
                         "http://www.kphoto.com.tw/image/catalog/event/%E7%B6%B2%E8%B3%BC%E5%BF%AB%E9%80%9F%E9%80%81.jpg",
                     refundKnow:
                         "https://motomarket.cc/image/catalog/2019/%E9%A0%81%E9%9D%A2%E7%AE%A1%E7%90%86/201811191554.jpg",
-                    Category1Id: 1,
-                    Category2Id: 1,
+                    Category1Id: 11,
+                    Category2Id: 11,
                     Category3Id: 11, // 原本在本地端寫2就可以了，但上了heroku，分類會跳10號，所以必須改寫成11
                     createdAt: new Date(),
                     updatedAt: new Date(),
@@ -78,13 +79,13 @@ module.exports = {
             }),
             {}
         )
-        return queryInterface.bulkInsert(
+        queryInterface.bulkInsert(
             "Products",
-            Array.from({ length: 10 }).map((d) => {
+            Array.from({ length: 2 }).map((d) => {
                 const listPrice = faker.commerce.price()
                 return {
                     name: faker.commerce.productName(),
-                    BrandId: Math.floor(Math.random() * 5) * 10 + 1, // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
+                    BrandId: 21, // 原本只要寫3就可以了，但因為heroku會跳10號，所以要改寫
                     listPrice: listPrice,
                     sellingPrice: listPrice - 10,
                     inventory: faker.random.number(),
@@ -105,7 +106,42 @@ module.exports = {
                     refundKnow:
                         "https://motomarket.cc/image/catalog/2019/%E9%A0%81%E9%9D%A2%E7%AE%A1%E7%90%86/201811191554.jpg",
                     Category1Id: 11, // 原本在本地端寫2就可以了，但上了heroku，分類會跳10號，所以必須改寫成11
-                    Category2Id: 11, // 原本在本地端寫2就可以了，但上了heroku，分類會跳10號，所以必須改寫成11
+                    Category2Id: 21, // 原本在本地端寫2就可以了，但上了heroku，分類會跳10號，所以必須改寫成11
+                    Category3Id: 21, // 原本在本地端寫3就可以了，但上了heroku，分類會跳10號，所以必須改寫成21
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                }
+            }),
+            {}
+        )
+        return queryInterface.bulkInsert(
+            "Products",
+            Array.from({ length: 2 }).map((d) => {
+                const listPrice = faker.commerce.price()
+                return {
+                    name: faker.commerce.productName(),
+                    BrandId: 31, // 原本只要寫3就可以了，但因為heroku會跳10號，所以要改寫
+                    listPrice: listPrice,
+                    sellingPrice: listPrice - 10,
+                    inventory: faker.random.number(),
+                    sellingStatus: faker.random.boolean(),
+                    shippingFee: faker.random.boolean(),
+                    image1:
+                        "https://img4.momoshop.com.tw/goodsimg/0007/200/249/7200249_R.jpg?t=1582202250",
+                    image2:
+                        "https://img4.momoshop.com.tw/goodsimg/0007/200/249/7200249_R1.jpg?t=1582202250",
+                    image3:
+                        "https://img4.momoshop.com.tw/goodsimg/0007/200/249/7200249_R2.jpg?t=1582202250",
+                    image4:
+                        "https://img4.momoshop.com.tw/goodsimg/0007/200/249/7200249_R3.jpg?t=1582202250",
+                    detail:
+                        "https://img3.momoshop.com.tw/expertimg/0007/471/442/01.jpg?t=1582773227401",
+                    deliveryKnow:
+                        "http://www.kphoto.com.tw/image/catalog/event/%E7%B6%B2%E8%B3%BC%E5%BF%AB%E9%80%9F%E9%80%81.jpg",
+                    refundKnow:
+                        "https://motomarket.cc/image/catalog/2019/%E9%A0%81%E9%9D%A2%E7%AE%A1%E7%90%86/201811191554.jpg",
+                    Category1Id: 11, // 原本在本地端寫2就可以了，但上了heroku，分類會跳10號，所以必須改寫成11
+                    Category2Id: 21, // 原本在本地端寫2就可以了，但上了heroku，分類會跳10號，所以必須改寫成11
                     Category3Id: 21, // 原本在本地端寫3就可以了，但上了heroku，分類會跳10號，所以必須改寫成21
                     createdAt: new Date(),
                     updatedAt: new Date(),

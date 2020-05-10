@@ -6,12 +6,12 @@ module.exports = {
             "Category1s",
             [
                 {
-                    name: "居家",
+                    name: "3C",
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    name: "家電",
+                    name: "居家",
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -22,13 +22,19 @@ module.exports = {
             "Category2s",
             [
                 {
-                    name: "水杯/水瓶/水壺",
+                    name: "通訊設備",
                     Category1Id: 1,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    name: "清潔家電",
+                    name: "家具",
+                    Category1Id: 11, // 原本是2，但上了heroku會跳號，要改成11
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
+                {
+                    name: "家電",
                     Category1Id: 11, // 原本是2，但上了heroku會跳號，要改成11
                     createdAt: new Date(),
                     updatedAt: new Date(),
@@ -40,20 +46,20 @@ module.exports = {
             "Category3s",
             [
                 {
-                    name: "保冰/溫杯瓶",
+                    name: "手機",
                     Category2Id: 1,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    name: "馬克杯/水杯",
-                    Category2Id: 1,
+                    name: "沙發",
+                    Category2Id: 11,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    name: "圓筒吸塵器",
-                    Category2Id: 11, // 原本是2，但上了heroku會跳號，要改成11
+                    name: "吸塵器",
+                    Category2Id: 21, // 原本是2，但上了heroku會跳號，要改成11
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
