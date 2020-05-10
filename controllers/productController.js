@@ -73,7 +73,7 @@ const productController = {
             })
         }
     },
-    getProductsByCategory: (req, res) => {
+    getProductsByCategory: async (req, res) => {
         const category1Id = req.query.category1Id
         const category2Id = req.query.category2Id
         const category3Id = req.query.category3Id
@@ -81,14 +81,30 @@ const productController = {
         const sort = req.query.sort
         const whereQuery = {}
         const sortQuery = []
+        const categories = {}
 
-        // 判斷是否有帶大/中/小分類的Id，才會去查詢該分類相關的商品
+        // 判斷是否有帶大/中/小分類的Id，才會去查詢該分類相關的商品，同時也順便把要顯示的麵包屑名稱帶回去
         if (category1Id) {
             whereQuery["category1Id"] = category1Id
+            let category1 = await Category1.findByPk(category1Id)
+            categories["category1"] = category1
         } else if (category2Id) {
             whereQuery["category2Id"] = category2Id
+            let category2 = await Category2.findByPk(category2Id, {
+                include: [{ model: db.Category1 }],
+            })
+            categories["category1"] = category2.Category1
+            categories["category2"] = category2
         } else if (category3Id) {
             whereQuery["category3Id"] = category3Id
+            let category3 = await Category3.findByPk(category3Id, {
+                include: [
+                    { model: db.Category2, include: [{ model: db.Category1 }] },
+                ],
+            })
+            categories["category1"] = category3.Category2.Category1
+            categories["category2"] = category3.Category2
+            categories["category3"] = category3
         }
 
         // 判斷有帶品牌Id，才會去查詢該品牌相關的商品
@@ -134,9 +150,9 @@ const productController = {
                         ).includes(product.id),
                     }
                 })
-                res.json({ products })
+                res.json({ products, categories })
             } else {
-                res.json({ products })
+                res.json({ products, categories })
             }
         })
     },
