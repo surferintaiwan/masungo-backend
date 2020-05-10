@@ -267,8 +267,8 @@ const orderController = {
                                 .then((order) => {
                                     // 跳轉回前端的訂單完成頁
                                     res.redirect(
-                                        // `https://surferintaiwan.github.io/masungo-frontend/#/checkout/finish/${order.id}`
-                                        `http://localhost:8080/#/checkout/finish/${order.id}`
+                                        `https://surferintaiwan.github.io/masungo-frontend/#/checkout/finish/${order.id}`
+                                        // `http://localhost:8080/#/checkout/finish/${order.id}`
                                     )
                                 })
                         })
