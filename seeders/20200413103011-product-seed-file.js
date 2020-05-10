@@ -77,7 +77,7 @@ module.exports = {
                         "https://motomarket.cc/image/catalog/2019/%E9%A0%81%E9%9D%A2%E7%AE%A1%E7%90%86/201811191554.jpg",
                     Category1Id: 1,
                     Category2Id: 1,
-                    Category3Id: 11, // 原本在本地端寫2就可以了，但上了mysql，分類會跳10號，所以必須改寫成11
+                    Category3Id: 11, // 原本在本地端寫2就可以了，但上了heroku，分類會跳10號，所以必須改寫成11
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 }
@@ -113,9 +113,9 @@ module.exports = {
                         "http://www.kphoto.com.tw/image/catalog/event/%E7%B6%B2%E8%B3%BC%E5%BF%AB%E9%80%9F%E9%80%81.jpg",
                     refundKnow:
                         "https://motomarket.cc/image/catalog/2019/%E9%A0%81%E9%9D%A2%E7%AE%A1%E7%90%86/201811191554.jpg",
-                    Category1Id: 2,
-                    Category2Id: 11, // 原本在本地端寫2就可以了，但上了mysql，分類會跳10號，所以必須改寫成11
-                    Category3Id: 21, // 原本在本地端寫3就可以了，但上了mysql，分類會跳10號，所以必須改寫成21
+                    Category1Id: 11, // 原本在本地端寫2就可以了，但上了heroku，分類會跳10號，所以必須改寫成11
+                    Category2Id: 11, // 原本在本地端寫2就可以了，但上了heroku，分類會跳10號，所以必須改寫成11
+                    Category3Id: 21, // 原本在本地端寫3就可以了，但上了heroku，分類會跳10號，所以必須改寫成21
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 }
