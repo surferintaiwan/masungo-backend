@@ -262,7 +262,7 @@ const orderController = {
                         Order.findByPk(paymentRecord.OrderId).then((order) => {
                             order
                                 .update({
-                                    OrderStatusId: 2,
+                                    OrderStatusId: 11, // 原本是2，但上了heroku會跳號，所以要改成11
                                 })
                                 .then((order) => {
                                     // 跳轉回前端的訂單完成頁
