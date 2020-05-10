@@ -214,6 +214,13 @@ router.get(
     adminController.getAllOrders
 )
 
+router.put(
+    "/admin/orders/:orderId",
+    authenticated,
+    authenticatedAdmin,
+    adminController.updateOrderShipped
+)
+
 // 品牌管理
 router.get(
     "/admin/brands",

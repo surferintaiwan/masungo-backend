@@ -323,6 +323,20 @@ const adminController = {
             })
         })
     },
+    updateOrderShipped: (req, res) => {
+        Order.findByPk(req.params.orderId).then((order) => {
+            // 判斷要修改的訂單狀態是不是已經在訂單處理中11，才去把他的訂單狀態(原本是寫2就好，但上了Heroku會跳號，所以要改成11)
+            if (order.OrderStatusId === 11) {
+                order
+                    .update({
+                        orderStatusId: 31, // 原本是寫4已出貨就好，但上了Heroku會跳號，所以要改成31
+                    })
+                    .then((order) => {
+                        res.json({ status: "success" })
+                    })
+            }
+        })
+    },
 }
 
 module.exports = adminController
