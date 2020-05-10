@@ -14,10 +14,7 @@ module.exports = {
                 const listPrice = faker.commerce.price()
                 return {
                     name: faker.commerce.productName(),
-                    BrandId:
-                        Math.floor(Math.random() * 5) * // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
-                            Math.ceil(Math.random() * 10) +
-                        1,
+                    BrandId: Math.floor(Math.random() * 5) * 10 + 1, // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
                     listPrice: listPrice,
                     sellingPrice: listPrice - 10,
                     inventory: faker.random.number(),
@@ -52,10 +49,7 @@ module.exports = {
                 const listPrice = faker.commerce.price()
                 return {
                     name: faker.commerce.productName(),
-                    BrandId:
-                        Math.floor(Math.random() * 5) * // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
-                            Math.ceil(Math.random() * 10) +
-                        1,
+                    BrandId: Math.floor(Math.random() * 5) * 10 + 1, // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
                     listPrice: listPrice,
                     sellingPrice: listPrice - 10,
                     inventory: faker.random.number(),
@@ -90,10 +84,7 @@ module.exports = {
                 const listPrice = faker.commerce.price()
                 return {
                     name: faker.commerce.productName(),
-                    BrandId:
-                        Math.floor(Math.random() * 5) * // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
-                            Math.ceil(Math.random() * 10) +
-                        1,
+                    BrandId: Math.floor(Math.random() * 5) * 10 + 1, // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
                     listPrice: listPrice,
                     sellingPrice: listPrice - 10,
                     inventory: faker.random.number(),
