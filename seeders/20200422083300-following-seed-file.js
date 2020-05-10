@@ -13,7 +13,7 @@ module.exports = {
                 },
                 {
                     UserId: 1,
-                    ProductId: 2,
+                    ProductId: 11, // 原本是2，但上了heroku會跳號，要改成11
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },

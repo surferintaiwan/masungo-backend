@@ -14,7 +14,10 @@ module.exports = {
                 const listPrice = faker.commerce.price()
                 return {
                     name: faker.commerce.productName(),
-                    BrandId: Math.floor(Math.random() * 5) + 1,
+                    BrandId:
+                        Math.floor(Math.random() * 5) * // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
+                            Math.ceil(Math.random() * 10) +
+                        1,
                     listPrice: listPrice,
                     sellingPrice: listPrice - 10,
                     inventory: faker.random.number(),
@@ -49,7 +52,10 @@ module.exports = {
                 const listPrice = faker.commerce.price()
                 return {
                     name: faker.commerce.productName(),
-                    BrandId: Math.floor(Math.random() * 5) + 1,
+                    BrandId:
+                        Math.floor(Math.random() * 5) * // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
+                            Math.ceil(Math.random() * 10) +
+                        1,
                     listPrice: listPrice,
                     sellingPrice: listPrice - 10,
                     inventory: faker.random.number(),
@@ -71,7 +77,7 @@ module.exports = {
                         "https://motomarket.cc/image/catalog/2019/%E9%A0%81%E9%9D%A2%E7%AE%A1%E7%90%86/201811191554.jpg",
                     Category1Id: 1,
                     Category2Id: 1,
-                    Category3Id: 2,
+                    Category3Id: 11, // 原本在本地端寫2就可以了，但上了mysql，分類會跳10號，所以必須改寫成11
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 }
@@ -84,7 +90,10 @@ module.exports = {
                 const listPrice = faker.commerce.price()
                 return {
                     name: faker.commerce.productName(),
-                    BrandId: Math.floor(Math.random() * 5) + 1,
+                    BrandId:
+                        Math.floor(Math.random() * 5) * // 原本只要寫Math.floor(Math.random() * 5)就可以了，但因為heroku會跳10號，所以要改寫
+                            Math.ceil(Math.random() * 10) +
+                        1,
                     listPrice: listPrice,
                     sellingPrice: listPrice - 10,
                     inventory: faker.random.number(),
@@ -105,8 +114,8 @@ module.exports = {
                     refundKnow:
                         "https://motomarket.cc/image/catalog/2019/%E9%A0%81%E9%9D%A2%E7%AE%A1%E7%90%86/201811191554.jpg",
                     Category1Id: 2,
-                    Category2Id: 2,
-                    Category3Id: 3,
+                    Category2Id: 11, // 原本在本地端寫2就可以了，但上了mysql，分類會跳10號，所以必須改寫成11
+                    Category3Id: 21, // 原本在本地端寫3就可以了，但上了mysql，分類會跳10號，所以必須改寫成21
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 }

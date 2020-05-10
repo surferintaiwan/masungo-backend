@@ -13,7 +13,7 @@ module.exports = {
                     UserId: 1,
                     DeliveryMethodId: 1,
                     PaymentMethodId: 1,
-                    OrderStatusId: 2,
+                    OrderStatusId: 11, // 原本是2訂單處理中，但上了heroku會跳號，要改成11
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
@@ -44,21 +44,21 @@ module.exports = {
                 },
                 {
                     OrderId: 1,
-                    ProductId: 2,
+                    ProductId: 11, // 原本是2，上了heroku會跳號，改11
                     quantity: 2,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
                     OrderId: 2,
-                    ProductId: 3,
+                    ProductId: 21, // 原本是3，上了heroku會跳號，改21
                     quantity: 1,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
                     OrderId: 2,
-                    ProductId: 4,
+                    ProductId: 31, // 原本是4，上了heroku會跳號，改31
                     quantity: 2,
                     createdAt: new Date(),
                     updatedAt: new Date(),
