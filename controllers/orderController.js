@@ -17,14 +17,14 @@ const transporter = nodemailer.createTransport({
 
 // 產生交易資料給藍新
 const URL = process.env.URL
-const BackEndURL = process.env.BackEndURL
+const FrontEndURL = process.env.FrontEndURL
 const MerchantID = process.env.MerchantID
 const HashKey = process.env.HashKey
 const HashIV = process.env.HashIV
 const PayGateWay = "https://ccore.spgateway.com/MPG/mpg_gateway" // 要把交易資料以formdata格式打給API的網址
 const ReturnURL = URL + "/api/spgateway/callback?from=ReturnURL"
 const NotifyURL = URL + "/api/spgateway/callback?from=NotifyURL"
-const ClientBackURL = BackEndURL + "/cart"
+const ClientBackURL = FrontEndURL + "/cart"
 
 // 1.產生交易資料之字串
 function genDataChain(TradeInfo) {
@@ -267,7 +267,7 @@ const orderController = {
                                 .then((order) => {
                                     // 跳轉回前端的訂單完成頁
                                     res.redirect(
-                                        `${BackEndURL}/checkout/finish/${order.id}`
+                                        `${FrontEndURL}/checkout/finish/${order.id}`
                                     )
                                 })
                         })
