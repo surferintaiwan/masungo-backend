@@ -1,32 +1,38 @@
 {
-  "name": "masungo-backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-session": "^1.17.1",
-    "faker": "^4.1.0",
-    "fs": "0.0.1-security",
-    "jsonwebtoken": "^8.5.1",
-    "multer": "^1.4.2",
-    "mysql2": "^2.1.0",
-    "nodemailer": "^6.4.6",
-    "passport": "^0.4.1",
-    "passport-jwt": "^4.0.0",
-    "pg": "^8.0.3",
-    "sequelize": "^5.21.6",
-    "sequelize-cli": "^5.5.1"
-  }
+    "name": "masungo-backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node app.js",
+        "dev": "nodemon app.js",
+        "test": "mocha tests --exit --recursive --timeout 5000",
+        "cover": "/node_modules/nyc/bin/nyc.js mocha tests --recursive --exit"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.19.0",
+        "chai": "^4.2.0",
+        "cors": "^2.8.5",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "express-session": "^1.17.1",
+        "faker": "^4.1.0",
+        "fs": "0.0.1-security",
+        "jsonwebtoken": "^8.5.1",
+        "multer": "^1.4.2",
+        "mysql2": "^2.1.0",
+        "nodemailer": "^6.4.6",
+        "passport": "^0.4.1",
+        "passport-jwt": "^4.0.0",
+        "pg": "^8.0.3",
+        "sequelize": "^5.21.6",
+        "sequelize-cli": "^5.5.1",
+        "supertest": "^4.0.2"
+    },
+    "devDependencies": {
+        "nyc": "^15.0.1"
+    }
 }

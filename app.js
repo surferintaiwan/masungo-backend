@@ -25,3 +25,5 @@ app.listen(port, () => {
 // app.use(express.json())
 
 require("./routes")(app)
+
+module.exports = app
