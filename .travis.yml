@@ -26,5 +26,3 @@ deploy:
   api_key:
     secure: b708d5dd-0ff1-4c68-a8ef-258740ca6bf0
   app: masungo-backend
-  on:
-    repo: https://git.heroku.com/masungo-backend.git
