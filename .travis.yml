@@ -24,7 +24,7 @@ deploy:
   provider: heroku
   edge: true
   api_key:
-    secure: e84fab08-f5e5-4881-95c9-b28c7cc0d3cb
+    secure: b708d5dd-0ff1-4c68-a8ef-258740ca6bf0
   app: masungo-backend
   on:
     repo: surferintaiwan/masungo-backend
