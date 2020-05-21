@@ -13,6 +13,7 @@ env:
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS masungo default character set utf8mb4 collate utf8mb4_unicode_ci;'
   - npm install sequelize-cli -g
+  - npm install mocha -g
   - export JWT_SECRET=masugogogo
 
 # 在執行測試之前的指令
