@@ -22,6 +22,7 @@ before_script:
 
 deploy:
   provider: heroku
+  edge: true
   api_key:
     secure: e84fab08-f5e5-4881-95c9-b28c7cc0d3cb
   app: masungo-backend
