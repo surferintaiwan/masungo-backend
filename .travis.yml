@@ -1,28 +1,21 @@
 language: node_js
 node_js:
   - "10"
-
 services:
   - mysql
-
-# 設定參數(Travis CI 會按照參數分別執行)
 env:
   - NODE_ENV=test
-
-# 在 install 前執行的指令
 before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS masungo default character set utf8mb4 collate utf8mb4_unicode_ci;'
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS masungo default character set utf8mb4 collate
+    utf8mb4_unicode_ci;'
   - npm install sequelize-cli -g
   - npm install mocha -g
   - export JWT_SECRET=masugogogo
-
-# 在執行測試之前的指令
 before_script:
   - sequelize db:migrate
-
 deploy:
   provider: heroku
   edge: true
   api_key:
-    secure: b708d5dd-0ff1-4c68-a8ef-258740ca6bf0
+    secure: UrJBpGgtO87CrNGUYsPZ00C2o1dYo7snbiFmZFuo6drRNAS/7VicPabs88bhzU6HmMU1bzXQxcX42bJD9G6IgLpU2mlgCrqGNj3XOwOdS8eFvH/fW6bCyOQSO3Hsw1YYBKZJcuxP2CLQE6aW4TLTlM7ciDa3VXls/nEa7X6NR8Q2g6vSbnrm+LShvEmI46O9pC/YPtNn9vVyphdgxSJK+tjR+Ys7GQmzkeAMEyAA276DNWDX5vRgaJj7E//sl065ukKEoejMI6HDM9mRfFu9QQj2NhcD8h2Zw1R5DOOZH2uPfzu0nP0lgKep8NmAHfWa866CViU3ib2pcWF3PanWygQvAQ2rPXVfKq16GqJZsIcMpUjUoXMdgm4WJ5I6fajoeJVRzj6BW/uDUKHV76BvlM8qivm6mXM5FUDu0BM0gVPAe54izb7PCOXLZ0/7RI3p0Ag/jXskuHRcTkdjkOC5YXILDLkeO+r0tM7rxcOK8JD1BfADN90E25PugEi7szxhWDh52EYUrUCdPYd11ffgQ4N/S2wU2tfUl13bWgR2agUjSyyFc+bK2n/hN1ehNfT1bDunk7p79p4Ru9hqzuQuA/rwdjPjyYLicZ/ZIdroSLvItulGBMYc28ZS50R8kxnjYBZj0Vl7aglh7FISakPsxMipmHFINdDlagYfezaLQOc=
   app: masungo-backend
