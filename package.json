@@ -7,7 +7,7 @@
         "start": "node app.js",
         "dev": "nodemon app.js",
         "test": "mocha tests --exit --recursive --timeout 5000",
-        "cover": "/node_modules/nyc/bin/nyc.js mocha tests --recursive --exit"
+        "cover": "./node_modules/.bin/nyc mocha tests --recursive --timeout 5000 --exit"
     },
     "author": "",
     "license": "ISC",
