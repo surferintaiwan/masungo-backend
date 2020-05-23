@@ -12,6 +12,16 @@ const OrderStatus = db.OrderStatus
 
 const userController = {
     signUp: (req, res) => {
+        // 任一個欄位沒填就不放行
+        if (
+            !req.body.name ||
+            !req.body.email ||
+            !req.body.password ||
+            !req.body.passwordCheck
+        ) {
+            return res.json({ status: "error", message: "有欄位未填" })
+        }
+
         if (req.body.passwordCheck !== req.body.password) {
             return res.json({ status: "error", message: "兩次密碼輸入不相同" })
         } else {
