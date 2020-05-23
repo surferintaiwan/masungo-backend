@@ -1,8 +1,8 @@
 const { expect } = require("chai")
 const request = require("supertest")
 const app = require("../../../app.js")
-
 const db = require("../../../models")
+const bcrypt = require("bcryptjs")
 
 describe("# SignUp", () => {
     before(async function () {
@@ -47,7 +47,6 @@ describe("# SignUp", () => {
             .send(
                 "name=name&email=email&password=password&passwordCheck=password2"
             )
-            .expect()
             .end((err, res) => {
                 expect(res.statusCode).to.be.equal(200)
                 expect(res.body.message).to.be.equal("兩次密碼輸入不相同")
@@ -61,7 +60,6 @@ describe("# SignUp", () => {
                 .send(
                     "name=&email=email&password=password&passwordCheck=password"
                 )
-                .expect()
                 .end((err, res) => {
                     expect(res.statusCode).to.be.equal(200)
                     expect(res.body.message).to.be.equal("有欄位未填")
@@ -74,7 +72,6 @@ describe("# SignUp", () => {
                 .send(
                     "name=name&email=&password=password&passwordCheck=password"
                 )
-                .expect()
                 .end((err, res) => {
                     expect(res.statusCode).to.be.equal(200)
                     expect(res.body.message).to.be.equal("有欄位未填")
@@ -86,10 +83,79 @@ describe("# SignUp", () => {
         request(app)
             .post("/api/signup")
             .send("name=name&email=&password=password&passwordCheck=password2")
-            .expect()
             .end((err, res) => {
                 expect(res.statusCode).to.be.equal(200)
                 expect(res.body.message).to.be.equal("有欄位未填")
+                done()
+            })
+    })
+
+    after(async function () {
+        await await db.User.destroy({ where: {}, truncate: true })
+    })
+})
+
+describe("# SignIn", function () {
+    before(async function () {
+        await db.User.destroy({ where: {}, truncate: true })
+        await db.User.create({
+            name: "name",
+            email: "email",
+            password: bcrypt.hashSync("password", bcrypt.genSaltSync(10), null),
+        })
+    })
+    describe("# 帳號或密碼未輸入", () => {
+        it("帳號未輸入", (done) => {
+            request(app)
+                .post("/api/signin")
+                .send("email&password=password")
+                .end((err, res) => {
+                    expect(res.statusCode).to.be.equal(200)
+                    expect(res.body.message).to.be.equal("請輸入帳號及密碼")
+                    done()
+                })
+        })
+        it("密碼未輸入", (done) => {
+            request(app)
+                .post("/api/signin")
+                .send("email=email&password")
+                .end((err, res) => {
+                    expect(res.statusCode).to.be.equal(200)
+                    expect(res.body.message).to.be.equal("請輸入帳號及密碼")
+                    done()
+                })
+        })
+    })
+
+    it("沒有這個使用者", (done) => {
+        request(app)
+            .post("/api/signin")
+            .send("email=mail&password=password")
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(401)
+                expect(res.body.message).to.be.equal("沒有這個使用者")
+                done()
+            })
+    })
+
+    it("密碼錯誤", (done) => {
+        request(app)
+            .post("/api/signin")
+            .send("email=email&password=12")
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(401)
+                expect(res.body.message).to.be.equal("密碼錯誤")
+                done()
+            })
+    })
+
+    it("# 登入成功，簽發token", (done) => {
+        request(app)
+            .post("/api/signin")
+            .send("email=email&password=password")
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(200)
+                expect(res.body.message).to.be.equal("ok")
                 done()
             })
     })
