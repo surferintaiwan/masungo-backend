@@ -307,4 +307,8 @@ describe("# 新增/移除追蹤商品", () => {
                 done()
             })
     })
+    after(async function () {
+        await db.User.destroy({ where: {}, truncate: true })
+        APIToken = ""
+    })
 })

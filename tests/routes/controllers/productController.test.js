@@ -360,7 +360,7 @@ describe("# 商品詳細頁 - GET /products/:productId", function () {
             name: "super好用杯子",
         })
     })
-    it("# 有帶token", function () {
+    it("# 有帶token", function (done) {
         request(app)
             .get("/api/products/1")
             .set({
@@ -372,7 +372,7 @@ describe("# 商品詳細頁 - GET /products/:productId", function () {
                 done()
             })
     })
-    it("# 沒帶token", function () {
+    it("# 沒帶token", function (done) {
         request(app)
             .get("/api/products/1")
             .end((err, res) => {
