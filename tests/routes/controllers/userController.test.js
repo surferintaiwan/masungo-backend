@@ -1,10 +1,12 @@
 const { expect } = require("chai")
 const request = require("supertest")
+const sinon = require("sinon")
 const app = require("../../../app.js")
 const db = require("../../../models")
 const bcrypt = require("bcryptjs")
+const passport = require("../../../config/passport")
 
-describe("# SignUp", () => {
+describe("# 註冊 - POST /api/signup", () => {
     before(async function () {
         await db.User.destroy({ where: {}, truncate: true })
     })
@@ -95,7 +97,7 @@ describe("# SignUp", () => {
     })
 })
 
-describe("# SignIn", function () {
+describe("# 登入 - POST /api/signin", function () {
     before(async function () {
         await db.User.destroy({ where: {}, truncate: true })
         await db.User.create({
@@ -162,5 +164,147 @@ describe("# SignIn", function () {
 
     after(async function () {
         await await db.User.destroy({ where: {}, truncate: true })
+    })
+})
+
+describe("# 獲取目前使用者資料", () => {
+    let APIToken = ""
+    before(async function () {
+        await db.User.destroy({ where: {}, truncate: { cascade: true } })
+        await db.User.create({
+            name: "name",
+            email: "email",
+            password: bcrypt.hashSync("password", bcrypt.genSaltSync(10), null),
+        })
+        const res = await request(app)
+            .post("/api/signin")
+            .send("email=email&password=password")
+        APIToken = res.body.token
+
+        // await db.User.destroy({ where: {}, truncate: { cascade: true } })
+        // const rootUser = await db.User.create({ name: "name" })
+        // this.authenticate = sinon
+        //     .stub(passport, "authenticate")
+        //     .callsFake((strategy, options, callback) => {
+        //         callback(null, { ...rootUser }, null)
+        //         return (req, res, next) => {}
+        //     })
+    })
+    it("# 獲取成功", (done) => {
+        request(app)
+            .get("/api/getcurrentuser")
+            .set({
+                Authorization: `Bearer ${APIToken}`,
+            })
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(200)
+                expect(res.body.user.name).to.be.equal("name")
+                done()
+            })
+    })
+
+    after(async function () {
+        await db.User.destroy({ where: {}, truncate: true })
+        // this.authenticate.restore()
+        APIToken = ""
+    })
+})
+
+describe("# 會員中心", () => {
+    let APIToken = ""
+    before(async function () {
+        await db.User.destroy({ where: {}, truncate: { cascade: true } })
+        await db.User.create({
+            name: "name",
+            email: "email",
+            password: bcrypt.hashSync("password", bcrypt.genSaltSync(10), null),
+        })
+        const res = await request(app)
+            .post("/api/signin")
+            .send("email=email&password=password")
+        APIToken = res.body.token
+    })
+    it("# 更新使用者資料 - PUT /api/member/edit", (done) => {
+        request(app)
+            .put("/api/member/edit")
+            .set({
+                Authorization: `Bearer ${APIToken}`,
+            })
+            .send("name=name&gender=1&birthday=19770604")
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(200)
+                expect(res.body.status).to.be.equal("success")
+                done()
+            })
+    })
+    it("# 查詢訂單資料 - GET /api/member/orders", (done) => {
+        request(app)
+            .get("/api/member/orders")
+            .set({
+                Authorization: `Bearer ${APIToken}`,
+            })
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(200)
+                expect(res.body.orders.length).to.be.at.least(0)
+                done()
+            })
+    })
+    it("# 查詢追蹤清單 - POST /api/member/followings", (done) => {
+        request(app)
+            .get("/api/member/followings")
+            .set({
+                Authorization: `Bearer ${APIToken}`,
+            })
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(200)
+                expect(res.body.followingProducts.length).to.be.at.least(0)
+                done()
+            })
+    })
+
+    after(async function () {
+        await db.User.destroy({ where: {}, truncate: true })
+        APIToken = ""
+    })
+})
+
+describe("# 新增/移除追蹤商品", () => {
+    let APIToken = ""
+    before(async function () {
+        await db.User.destroy({ where: {}, truncate: { cascade: true } })
+        await db.User.create({
+            name: "name",
+            email: "email",
+            password: bcrypt.hashSync("password", bcrypt.genSaltSync(10), null),
+        })
+        const res = await request(app)
+            .post("/api/signin")
+            .send("email=email&password=password")
+        APIToken = res.body.token
+    })
+    it("# 新增追蹤商品  - POST /products/:productId", (done) => {
+        request(app)
+            .post("/api/products/1")
+            .set({
+                Authorization: `Bearer ${APIToken}`,
+            })
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(200)
+                expect(res.body.status).to.be.equal("success")
+                done()
+            })
+    })
+
+    it("# 移除追蹤商品  - delete /products/:productId", (done) => {
+        request(app)
+            .delete("/api/products/1")
+            .set({
+                Authorization: `Bearer ${APIToken}`,
+            })
+            .end((err, res) => {
+                expect(res.statusCode).to.be.equal(200)
+                expect(res.body.status).to.be.equal("success")
+                done()
+            })
     })
 })

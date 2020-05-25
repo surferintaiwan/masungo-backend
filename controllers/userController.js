@@ -103,7 +103,6 @@ const userController = {
         res.json({ user })
     },
     updateUser: (req, res) => {
-        console.log(11111, req.body)
         User.findByPk(req.user.id).then((user) => {
             user.update({
                 name: req.body.name,
